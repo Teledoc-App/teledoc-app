@@ -32,9 +32,9 @@ model Doctor {
   password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
-  specialist   Specialist?   @relation(fields: [departmentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  specialist   Specialist?   @relation(fields: [specialistId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   appointments Appointment[]
-  departmentId String?
+  specialistId String?
 }
 
 model Specialist {
@@ -49,8 +49,6 @@ model Appointment {
   id          String    @id @default(uuid())
   name        String
   description String?
-  startedAt   DateTime?
-  finishedAt  DateTime?
   price       Int?
   statusId    String
   createdAt   DateTime  @default(now())
@@ -60,12 +58,22 @@ model Appointment {
   patient     Patient?  @relation(fields: [patientId], references: [id])
   doctorId    String
   doctor      Doctor    @relation(fields: [doctorId], references: [id])
+  TimeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
+  timeSlotId  String?
 }
 
 model Status {
   id           String        @id @default(uuid())
-  name         String        @unique // "Available" | "Booked" 
+  name         String        @unique // "Available" | "Pending" |  "Rejected" | "Accepted" | "Done"
   appointments Appointment[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
+}
+
+model TimeSlot {
+  id          String        @id @default(uuid())
+  time        String        @unique
+  startedAt   DateTime
+  finishedAt  DateTime
+  appointment Appointment[]
 }
