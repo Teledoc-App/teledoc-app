@@ -13,28 +13,31 @@ datasource db {
 model Patient {
   id           String        @id @default(uuid())
   username     String
-  imageUrl     String?
+  email        String        @unique // TODO: Multiple emails
+  phone        String        @unique // TODO: Multiple phones
+  password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
+  imageUrl     String?
   appointments Appointment[]
-  user         User          @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId       String        @unique
 }
 
 model Doctor {
   id           String        @id @default(uuid())
   strNumber    String
   imageUrl     String?
+  username     String
+  email        String        @unique // TODO: Multiple emails
+  phone        String        @unique // TODO: Multiple phones
+  password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
-  department   Department?   @relation(fields: [departmentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  specialist   Specialist?   @relation(fields: [departmentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   appointments Appointment[]
   departmentId String?
-  user         User          @relation(fields: [userId], references: [id])
-  userId       String        @unique
 }
 
-model Department {
+model Specialist {
   id        String   @id @default(uuid())
   title     String?  @unique
   createdAt DateTime @default(now()) @updatedAt
@@ -65,28 +68,4 @@ model Status {
   appointments Appointment[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
-}
-
-model UserRole {
-  id        String   @id @default(uuid())
-  symbol    String   @unique // "DOCTOR" | "PATIENT" | "ADMIN"
-  name      String   @unique // "Doctor" | "Patient" | "Admin"
-  sequence  Int? // "1" | "2" | "3"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  users     User[]
-}
-
-model User {
-  id         String    @id @default(uuid())
-  username   String
-  email      String    @unique // TODO: Multiple emails
-  phone      String    @unique // TODO: Multiple phones
-  password   String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now()) @updatedAt
-  userRoleId String?
-  userRole   UserRole? @relation(fields: [userRoleId], references: [id], onUpdate: Cascade)
-  patient    Patient?
-  doctor     Doctor?
 }
