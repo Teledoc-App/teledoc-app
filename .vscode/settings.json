@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "nextjs setup",
     "schema.prisma",
-    "swagger"
+    "swagger",
+    "user/router.ts"
   ]
 }
