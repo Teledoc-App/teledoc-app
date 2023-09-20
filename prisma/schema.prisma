@@ -100,14 +100,6 @@ model TimeSlot {
   appointment Appointment[]
 }
 
-model UserRole {
-  id        String   @id @default(uuid())
-  name      String   @unique // "Doctor" | "Patient" | "Admin"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  users     User[]
-}
-
 model User {
   id                  String        @id @default(uuid())
   firstName           String
@@ -120,8 +112,7 @@ model User {
   imageUrl            String?
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @default(now()) @updatedAt
-  userRoleId          String?
-  userRole            UserRole?     @relation(fields: [userRoleId], references: [id], onUpdate: Cascade)
+  role                String?       @default("patient") // "Doctor" | "Patient" | "Admin"
   patient             Patient?
   doctor              Doctor?
   doctorAppointments  Appointment[] @relation("doctor")
