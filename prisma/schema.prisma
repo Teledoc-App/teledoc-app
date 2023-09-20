@@ -51,6 +51,7 @@ model Patient {
 model Doctor {
   username     String
   strNumber    String
+  price        Int?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @default(now()) @updatedAt
   specialist   Specialist? @relation(fields: [specialistId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -62,6 +63,7 @@ model Doctor {
 model Specialist {
   id        String   @id @default(uuid())
   title     String   @unique
+  imageUrl  String?
   createdAt DateTime @default(now()) @updatedAt
   updatedAt DateTime @default(now()) @updatedAt
   doctors   Doctor[]
@@ -69,9 +71,8 @@ model Specialist {
 
 model Appointment {
   id          String    @id @default(uuid())
-  reason      String
+  reason      String?
   description String?
-  price       Int?
   statusId    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
@@ -94,9 +95,8 @@ model Status {
 
 model TimeSlot {
   id          String        @id @default(uuid())
-  time        String        @unique
-  startedAt   DateTime
-  finishedAt  DateTime
+  time        String
+  date        DateTime      @unique
   appointment Appointment[]
 }
 
