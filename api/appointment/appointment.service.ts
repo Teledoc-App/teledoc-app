@@ -77,3 +77,4 @@ export default AppointmentRequest;
 // Frontend: jika timeslots available maka button akan terang dan bisa di click
 // Frontend: jika timeslots not-availble maka button akan redup dan tidak bisa di click
 // sesudah patient klik salah 1 dari jam 8 a.m - 17 p.m, maka sistem akan membuat timeslots baru dan appointment selesai
+// haha
