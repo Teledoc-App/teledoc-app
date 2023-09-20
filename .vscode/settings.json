@@ -1,3 +1,7 @@
 {
-  "conventionalCommits.scopes": ["nextjs setup", "schema.prisma"]
+  "conventionalCommits.scopes": [
+    "nextjs setup",
+    "schema.prisma",
+    "swagger"
+  ]
 }
