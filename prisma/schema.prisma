@@ -96,7 +96,7 @@ model Status {
 model TimeSlot {
   id          String        @id @default(uuid())
   time        String
-  date        DateTime      @unique
+  date        DateTime
   appointment Appointment[]
 }
 
