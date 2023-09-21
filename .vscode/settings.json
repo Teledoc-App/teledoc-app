@@ -3,6 +3,7 @@
     "nextjs setup",
     "schema.prisma",
     "swagger",
-    "user/router.ts"
+    "user/router.ts",
+    "user.service.ts"
   ]
 }
