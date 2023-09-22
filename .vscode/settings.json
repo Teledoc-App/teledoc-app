@@ -4,6 +4,9 @@
     "schema.prisma",
     "swagger",
     "user/router.ts",
+    "auth/[...nextauth]",
+    "timeslot+appointment+user.me"
     "user.service.ts"
+
   ]
 }

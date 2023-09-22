@@ -62,7 +62,7 @@ model Appointment {
   patient     User?     @relation(fields: [patientId], references: [id], "patient")
   doctorId    String
   doctor      User      @relation(fields: [doctorId], references: [id], "doctor")
-  TimeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
+  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
   timeSlotId  String?
 }
 model Status {
@@ -82,10 +82,11 @@ model User {
   id                  String        @id @default(uuid())
   name                String
   email               String        @unique // TODO: Multiple emails
-  phone               String        @unique // TODO: Multiple phones
-  password            String
-  gender              UserGender
-  birthDate           DateTime      @db.Date
+  emailVerified       DateTime?
+  phone               String?       @unique // TODO: Multiple phones
+  password            String?
+  gender              UserGender?
+  birthDate           DateTime?     @db.Date
   image               String?
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @default(now()) @updatedAt
