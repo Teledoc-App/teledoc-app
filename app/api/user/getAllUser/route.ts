@@ -7,6 +7,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ users });
   } catch (error: any) {
     console.error(error);
-    return NextResponse.json({ message: error.message, success: false });
+    return NextResponse.json(
+      { message: error.message, success: false },
+      { status: 500 } // Internal Server Error
+    );
   }
 }
