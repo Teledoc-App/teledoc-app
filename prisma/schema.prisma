@@ -38,15 +38,15 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Patient {
-  username  String
-  height    String?
-  weight    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId    String   @unique
-}
+// model Patient {
+//   username  String
+//   height    String?
+//   weight    String?
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now()) @updatedAt
+//   user      User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+//   userId    String   @unique
+// }
 
 model Doctor {
   username     String
@@ -63,7 +63,7 @@ model Doctor {
 model Specialist {
   id        String   @id @default(uuid())
   title     String   @unique
-  imageUrl  String?
+  image     String?
   createdAt DateTime @default(now()) @updatedAt
   updatedAt DateTime @default(now()) @updatedAt
   doctors   Doctor[]
@@ -81,7 +81,7 @@ model Appointment {
   patient     User?     @relation(fields: [patientId], references: [id], "patient")
   doctorId    String
   doctor      User      @relation(fields: [doctorId], references: [id], "doctor")
-  TimeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
+  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
   timeSlotId  String?
 }
 
@@ -102,18 +102,18 @@ model TimeSlot {
 
 model User {
   id                  String        @id @default(uuid())
-  firstName           String
-  lastName            String
+  name                String
   email               String        @unique // TODO: Multiple emails
-  phone               String        @unique // TODO: Multiple phones
-  password            String
-  gender              UserGender
-  birthDate           DateTime      @db.Date
-  imageUrl            String?
+  emailVerified       DateTime?
+  phone               String?       @unique // TODO: Multiple phones
+  password            String?
+  gender              UserGender?
+  birthDate           DateTime?     @db.Date
+  image               String?
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @default(now()) @updatedAt
   role                String?       @default("patient") // "Doctor" | "Patient" | "Admin"
-  patient             Patient?
+  //patient             Patient?
   doctor              Doctor?
   doctorAppointments  Appointment[] @relation("doctor")
   patientAppointments Appointment[] @relation("patient")
