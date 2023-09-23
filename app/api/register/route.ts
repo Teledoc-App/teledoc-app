@@ -21,7 +21,7 @@ export async function POST(req: Request){
     try {
         const body = await req.json();
         await userSchema.validate(body);
-        const { email, name, phone, gender, birthDate, password, role } = body;
+        const { email, name, phone, gender, birthDate, password, role, image } = body;
         // email user exists
         const existingUserByEmail = await db.user.findUnique({
             where: { email: email }
@@ -46,6 +46,7 @@ export async function POST(req: Request){
                 name,
                 phone, 
                 gender, 
+                image,
                 birthDate: parsedBirthDate,
                 role
             }
