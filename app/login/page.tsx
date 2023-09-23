@@ -2,7 +2,7 @@
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
-interface Inputs {
+interface Register {
   email: string;
   password: string;
 }
@@ -12,8 +12,8 @@ const Page = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  } = useForm<Register>();
+  const onSubmit: SubmitHandler<Register> = (data) => console.log(data);
 
   return (
     // PAGE CONTAINER
