@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
                 },
                 reason: true,
                 description: true,
-                TimeSlot: {
+                timeSlot: {
                   select: {
                     time: true,
                     date: true,
