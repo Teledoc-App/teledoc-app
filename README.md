@@ -1,34 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TeleDoc
 
-## Getting Started
+## RevouProject
 
-First, run the development server:
+### Endpoints
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+### Login & Register
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Register : http://localhost:3000/api/auth/signup
+Login : http://localhost:3000/api/auth/signin
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### User
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Get All User: http://localhost:3000/api/user
+Get All User by ID : http://localhost:3000/api/user/1
+Get All User by ME : http://localhost:3000/api/user/me
 
-## Learn More
+### Doctor
 
-To learn more about Next.js, take a look at the following resources:
+Get All Doctor: http://localhost:3000/api/doctor
+Get All Doctor by ID : http://localhost:3000/api/doctor/1
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Specialist
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Get All Specialist : http://localhost:3000/api/specialist
+Get All Specialist by ID : http://localhost:3000/api/specialist/1
 
-## Deploy on Vercel
+### Appointments
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Get All Appointments : http://localhost:3000/api/appointment
+Get All Appointments by ID : http://localhost:3000/api/appointment/1
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### TimeSlot
+
+Get All TimeSlot : http://localhost:3000/api/timeSlot
+Get All TimeSlot by ID : http://localhost:3000/api/timeSlot/1
+
+### Status
+
+Get All Status : http://localhost:3000/api/status
+Get All Status by ID : http://localhost:3000/api/status/1

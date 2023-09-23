@@ -22,6 +22,7 @@ const Page = () => {
   const onSubmit: SubmitHandler<Login> = (data) => console.log(data);
 
   return (
+    // PAGE
     <div className="bg-white w-screen h-screen flex justify-center items-center px-4 py-8 overflow-y-scroll">
       <form
         onSubmit={handleSubmit(onSubmit)}

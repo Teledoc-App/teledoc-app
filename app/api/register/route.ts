@@ -1,11 +1,27 @@
+
 import { db } from "@/lib/db";
 import { NextResponse,  } from "next/server";
 import { hash } from 'bcrypt';
 import { parseISO } from 'date-fns'; 
-export async function POST(req: Request, ){
+
+import * as yup from 'yup'
+// Define a schema for input validation
+const userSchema = yup.object().shape({
+    email: yup.string().email().required(),
+    name: yup.string().required(),
+    phone: yup.string().required(),
+    gender: yup.string().oneOf(['M', 'F', 'O']).required(),
+    birthDate: yup.date().required(),
+    password: yup.string().matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/).min(8).required(),
+    role: yup.string().oneOf(['patient', 'doctor']).required(),
+  });
+
+
+export async function POST(req: Request){
     try {
         const body = await req.json();
-        const { email, firstName, lastName, phone, gender, birthDate, password, } = body;
+        await userSchema.validate(body);
+        const { email, name, phone, gender, birthDate, password, role, image } = body;
         // email user exists
         const existingUserByEmail = await db.user.findUnique({
             where: { email: email }
@@ -27,15 +43,16 @@ export async function POST(req: Request, ){
             data: {
                 email, 
                 password: hashedPassword,
-                firstName, 
-                lastName, 
+                name,
                 phone, 
                 gender, 
-                birthDate: parsedBirthDate
+                image,
+                birthDate: parsedBirthDate,
+                role
             }
         });
         const { password: newUserPassword, ...rest } = newUser
-        return NextResponse.json({user: newUser, message: "User create successfully"}, {status: 201});
+        return NextResponse.json({user: rest, message: "User create successfully"}, {status: 201});
     } catch(error) {
         console.log(error);
         return NextResponse.json({ message: error, success: false });
