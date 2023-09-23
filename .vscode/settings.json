@@ -4,6 +4,7 @@
     "schema.prisma",
     "swagger",
     "user/router.ts",
-    "user.service.ts"
+    "user.service.ts",
+    "app/login/page.tsx"
   ]
 }
