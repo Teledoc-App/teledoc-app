@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
             },
             reason: true,
             description: true,
-            TimeSlot: {
+            timeSlot: {
               select: {
                 time: true,
                 date: true,
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
             },
             reason: true,
             description: true,
-            TimeSlot: {
+            timeSlot: {
               select: {
                 time: true,
                 date: true,
@@ -127,7 +127,7 @@ export default async function PATCH(request: Request,
                 },
                 reason: true,
                 description: true,
-                TimeSlot: {
+                timeSlot: {
                   select: {
                     time: true,
                     date: true,
@@ -151,7 +151,7 @@ export default async function PATCH(request: Request,
                 },
                 reason: true,
                 description: true,
-                TimeSlot: {
+                timeSlot: {
                   select: {
                     time: true,
                     date: true,
