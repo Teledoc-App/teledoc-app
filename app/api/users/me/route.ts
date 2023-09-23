@@ -112,6 +112,7 @@ export default async function PATCH(request: Request,
             phone: true,
             gender: true,
             birthDate: true,
+            image: true,
             role: true,
             patientAppointments: {
               select: {
