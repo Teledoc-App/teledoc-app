@@ -29,7 +29,7 @@ export async function GET(
             }
           },
         },
-        TimeSlot: {
+        timeSlot: {
           select: {
            time: true,
            date: true,
@@ -93,7 +93,7 @@ export async function GET(
               }
             },
           },
-          TimeSlot: {
+          timeSlot: {
             select: {
              time: true,
              date: true,
