@@ -1,11 +1,17 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
+import { signIn } from 'next-auth/react';
+import { ReactNode } from "react";
+import GoogleSignInButton from "@/components/GoogleSigninButton";
 
 interface Register {
   email: string;
   password: string;
 }
+
+
+
 
 const Page = () => {
   const {
@@ -13,11 +19,17 @@ const Page = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Register>();
-  const onSubmit: SubmitHandler<Register> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Register> = async (data) => {
+   const signInData = await  signIn('credentials', {
+   data
+   }
+   )
+  };
 
   return (
     // PAGE CONTAINER
     <div className="bg-white w-screen h-screen flex justify-center items-center px-4">
+      <div  className="w-full max-w-[400px] flex flex-col items-center gap-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-[400px] flex flex-col items-center gap-4"
@@ -87,18 +99,16 @@ const Page = () => {
         >
           Sign in
         </button>
-        <button
-          type="submit"
-          className="bg-[#d9d9d9]/30 border border-[#d9d9d9] text-gray-500 rounded-lg w-full h-[60px] font-semibold relative"
-        >
+      </form>
+        <GoogleSignInButton>
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1920px-Google_%22G%22_Logo.svg.png"
-            alt="google-logo"
+            alt="google-logo" 
             className="w-[35px] absolute top-3 left-4"
-          />
+            />
           Sign in with Google
-        </button>
-      </form>
+            </GoogleSignInButton>
+   </div>
     </div>
   );
 };

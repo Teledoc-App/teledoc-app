@@ -1,26 +1,59 @@
 "use client";
 
+import Select from "react-select";
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from 'next/navigation';
 
 interface Login {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  phoneNumber: number;
+  phone: number;
   password: string;
-  gender: "male" | "female";
+  gender: { label: string; value: string };
   birthdate: Date;
-  role: "patient" | "doctor";
+  role: { label: string; value: string }
 }
-
+const genderOptions = [
+  { value: 'M', label: 'Male' },
+  { value: 'F', label: 'Female' },
+];
+const roleOptions = [
+  { value: 'patient', label: 'Patient' },
+  { value: 'doctor', label: 'Doctor' },
+];
 const Page = () => {
+  const router = useRouter();
+  const [selectedGender, setSelectedGender] = useState<{ value: string; label: string } | null>({
+    value: 'M',
+    label: 'Male',
+  });
+  
+  const [selectedRole, setSelectedRole] = useState<{ value: string; label: string } | null>({
+    value: 'patient',
+    label: 'Patient',
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Login>();
-  const onSubmit: SubmitHandler<Login> = (data) => console.log(data);
-
+  const onSubmit: SubmitHandler<Login> = async (data) => {
+    const response = await fetch('/api/register', {
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify ({
+        data
+      })
+    })
+if (response.ok) {
+  router.push('/sign-in')
+} else {
+  console.error('Registration failed')
+  }
+  }
   return (
     // PAGE
     <div className="bg-white w-screen h-screen flex justify-center items-center px-4 py-8 overflow-y-scroll">
@@ -30,54 +63,29 @@ const Page = () => {
       >
         <h1 className="text-[#ff5757] text-4xl font-bold">Teledoc</h1>
 
-        {/* FIRST NAME */}
-        <div className="w-full">
-          <label className="text-black" htmlFor="firstName">
-            First Name
-          </label>
-          <input
-            id="firstName"
-            type="text"
-            placeholder="Enter your first name"
-            defaultValue=""
-            {...register("firstName", {
-              required: {
-                value: true,
-                message: "First name is a required field",
-              },
-            })}
-            className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-gray-400  w-full outline-none ${
-              errors?.firstName
-                ? "border-amber-500 focus:border-amber-500"
-                : "focus:border-[#ff5757] border-[#d9d9d9]"
-            } `}
-          />
-          <p className="text-amber-500">{errors?.firstName?.message}</p>
-        </div>
-
         {/* LAST NAME */}
         <div className="w-full">
           <label className="text-black" htmlFor="lastName">
-            Last Name
+            Name
           </label>
           <input
             id="lastName"
             type="text"
             placeholder="Enter your last name"
             defaultValue=""
-            {...register("lastName", {
+            {...register("name", {
               required: {
                 value: true,
                 message: "Last name is a required field",
               },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-gray-400  w-full outline-none ${
-              errors?.lastName
+              errors?.name
                 ? "border-amber-500 focus:border-amber-500"
                 : "focus:border-[#ff5757] border-[#d9d9d9]"
             } `}
           />
-          <p className="text-amber-500">{errors?.lastName?.message}</p>
+          <p className="text-amber-500">{errors?.name?.message}</p>
         </div>
 
         {/* EMAIL */}
@@ -117,23 +125,23 @@ const Page = () => {
             Phone Number
           </label>
           <input
-            id="phoneNumber"
+            id="phone"
             type="number"
             placeholder="(XXX)-XXXX-XXXX"
             defaultValue=""
-            {...register("phoneNumber", {
+            {...register("phone", {
               required: {
                 value: true,
                 message: "Phone number is a required field",
               },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-gray-400  w-full outline-none ${
-              errors?.phoneNumber
+              errors?.phone
                 ? "border-amber-500 focus:border-amber-500"
                 : "focus:border-[#ff5757] border-[#d9d9d9]"
             } `}
           />
-          <p className="text-amber-500">{errors?.phoneNumber?.message}</p>
+          <p className="text-amber-500">{errors?.phone?.message}</p>
         </div>
 
         {/* PASSWORD */}
@@ -160,7 +168,17 @@ const Page = () => {
           />
           <p className="text-amber-500">{errors?.password?.message}</p>
         </div>
-
+       {/*GENDER*/}
+       <Select
+        defaultValue={selectedGender}
+        onChange={setSelectedGender}
+        options={genderOptions}
+      />
+       <Select
+        defaultValue={selectedRole}
+        onChange={setSelectedRole}
+        options={roleOptions}
+      />
         {/* SUBMIT */}
         <button
           type="submit"
