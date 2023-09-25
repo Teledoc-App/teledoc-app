@@ -1,9 +1,11 @@
 "use client";
 
 import Select from "react-select";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import GenderSelect from "@/components/GenderSelect";
+import RoleSelect from "@/components/RoleSelect";
 
 interface Login {
   name: string;
@@ -12,26 +14,29 @@ interface Login {
   password: string;
   gender: { label: string; value: string };
   birthdate: Date;
-  role: { label: string; value: string }
+  role: { label: string; value: string };
 }
-const genderOptions = [
-  { value: 'M', label: 'Male' },
-  { value: 'F', label: 'Female' },
-];
-const roleOptions = [
-  { value: 'patient', label: 'Patient' },
-  { value: 'doctor', label: 'Doctor' },
-];
+
+interface Gender {
+  value: string;
+  label: string;
+}
+
+interface Role {
+  value: string;
+  label: string;
+}
+
 const Page = () => {
   const router = useRouter();
-  const [selectedGender, setSelectedGender] = useState<{ value: string; label: string } | null>({
-    value: 'M',
-    label: 'Male',
+  const [selectedGender, setSelectedGender] = useState<Gender>({
+    value: "M",
+    label: "Male",
   });
-  
-  const [selectedRole, setSelectedRole] = useState<{ value: string; label: string } | null>({
-    value: 'patient',
-    label: 'Patient',
+
+  const [selectedRole, setSelectedRole] = useState<Role>({
+    value: "patient",
+    label: "Patient",
   });
   const {
     register,
@@ -39,21 +44,21 @@ const Page = () => {
     formState: { errors },
   } = useForm<Login>();
   const onSubmit: SubmitHandler<Login> = async (data) => {
-    const response = await fetch('/api/register', {
-      method:'POST',
+    const response = await fetch("/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify ({
-        data
-      })
-    })
-if (response.ok) {
-  router.push('/sign-in')
-} else {
-  console.error('Registration failed')
-  }
-  }
+      body: JSON.stringify({
+        data,
+      }),
+    });
+    if (response.ok) {
+      router.push("/sign-in");
+    } else {
+      console.error("Registration failed");
+    }
+  };
   return (
     // PAGE
     <div className="bg-white w-screen h-screen flex justify-center items-center px-4 py-8 overflow-y-scroll">
@@ -168,8 +173,36 @@ if (response.ok) {
           />
           <p className="text-amber-500">{errors?.password?.message}</p>
         </div>
-       {/*GENDER*/}
-       <Select
+        {/*GENDER*/}
+        <GenderSelect
+          selectedGender={selectedGender}
+          setSelectedGender={setSelectedGender}
+        />
+        <RoleSelect
+          selectedRole={selectedRole}
+          setSelectedRole={setSelectedRole}
+        />
+        {/* <RoleSelect/> */}
+        {/* <div className="w-full relative">
+          <label htmlFor="" className="text-black">
+            Gender
+          </label>
+          <button
+            type="button"
+            className="flex items-center px-4 w-full border border-[#d9d9d9] bg-[#d9d9d9]/30 text-black h-[60px] rounded-lg"
+          >
+            Male
+          </button>
+          <ul className="absolute bg-red-500 py-2 shadow-lg rounded-lg w-full mt-2">
+            <li className="text-black px-4 py-1 hover:cursor-pointer hover:bg-[#d9d9d9]/30">
+              Male
+            </li>
+            <li className="text-black px-4 py-1 hover:cursor-pointer hover:bg-[#d9d9d9]/30">
+              Female
+            </li>
+          </ul>
+        </div> */}
+        {/* <Select
         defaultValue={selectedGender}
         onChange={setSelectedGender}
         options={genderOptions}
@@ -178,18 +211,17 @@ if (response.ok) {
         defaultValue={selectedRole}
         onChange={setSelectedRole}
         options={roleOptions}
-      />
+      /> */}
         {/* SUBMIT */}
         <button
           type="submit"
           className="bg-[#ff5757] rounded-lg w-full h-[60px] font-semibold"
         >
-          Sign in
+          Sign up
         </button>
         <span className="text-black">
-          Already have an account?
-          <a href="" className="text-[#ff5757]">
-            {" "}
+          Already have an account?{" "}
+          <a href="./login" className="text-[#ff5757] hover:underline">
             Sign In
           </a>
         </span>
