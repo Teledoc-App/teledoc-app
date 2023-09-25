@@ -3,7 +3,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { ReactNode } from "react";
-import GoogleSignInButton from "@/src/components/GoogleSigninButton";
+import GoogleSignInButton from "@/components/GoogleSigninButton";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 interface Login {
