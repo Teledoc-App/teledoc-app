@@ -1,4 +1,4 @@
-import { db } from "@/src/lib/db";
+import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest,

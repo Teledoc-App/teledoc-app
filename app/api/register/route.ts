@@ -1,5 +1,5 @@
 
-import { db } from "@/src/lib/db";
+import { db } from "@/lib/db";
 import { NextResponse,  } from "next/server";
 import { hash } from 'bcrypt';
 import { parseISO } from 'date-fns'; 

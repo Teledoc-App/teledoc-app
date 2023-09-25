@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
-import { getErrorResponse } from "@/src/lib/helpers";
-import { db } from "@/src/lib/db";
+import { getErrorResponse } from "@/lib/helpers";
+import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "@/src/lib/auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
@@ -91,98 +91,93 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export default async function PATCH(request: Request,
-  { params }: { params: { userId: string } }) {
-    try {
-
-      const session = await getServerSession(authOptions);
-
-
-      if (session && session.user) {
-        const userId = session.user.id; 
-        let updatedUserData = await request.json();
+export async function PATCH(
+  request: Request) {
     
-       
-        const updatedUser = await db.user.update({
-          where: { id: userId },
-          data: updatedUserData,
-          select: {
-            name: true,
-            email: true,
-            phone: true,
-            gender: true,
-            birthDate: true,
-            image: true,
-            role: true,
-            patientAppointments: {
-              select: {
-                doctor: {
-                  select: {
-                    doctor: {
-                      select: {
-                        username: true,
-                      }
-                    }
-                  }
-                },
-                reason: true,
-                description: true,
-                timeSlot: {
-                  select: {
-                    time: true,
-                    date: true,
-                  }
-                },
-                status: {
-                  select: {
-                    name: true
-                  }
-                }
-              }
-            },
-            doctorAppointments: {
-              select: {
-                patient: {
-                  select: {
-                    name: true,
-                    birthDate: true,
-                    gender: true,
-                  }
-                },
-                reason: true,
-                description: true,
-                timeSlot: {
-                  select: {
-                    time: true,
-                    date: true,
-                  }
-                },
-                status: {
-                  select: {
-                    name: true
-                  }
-                }
-              }
-            }
-          }
-        });
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return getErrorResponse(
+        401,
+        "You are not logged in, please provide a token to gain access"
+      );
+    }
 
-        return NextResponse.json({
-          status: "success",
-          data: updatedUser,
-        });
-      } else {
-        return NextResponse.json({
-          status: "error",
-          message: "You must be logged in to perform an update.",
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json({
-        status: "error",
-        message: "Failed to update the user.",
+    const id = session.user.id;
+    let json = await request.json();
+
+    const updated_user = await db.user.update({
+      where: { id },
+      data: json,
+    });
+
+    let json_response = {
+      status: "success",
+      data: {
+        user: updated_user,
+      },
+    };
+    return NextResponse.json(json_response);
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      let error_response = {
+        status: "fail",
+        message: "No User with the Provided ID Found",
+      };
+      return new NextResponse(JSON.stringify(error_response), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
       });
     }
-  } 
- 
+
+    let error_response = {
+      status: "error",
+      message: error.message,
+    };
+    return new NextResponse(JSON.stringify(error_response), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+export async function DELETE(
+  request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return getErrorResponse(
+        401,
+        "You are not logged in, please provide a token to gain access"
+      );
+    }
+
+    const id = session.user.id;
+    await db.user.delete({
+      where: { id },
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      let error_response = {
+        status: "fail",
+        message: "No User with the Provided ID Found",
+      };
+      return new NextResponse(JSON.stringify(error_response), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    let error_response = {
+      status: "error",
+      message: error.message,
+    };
+    return new NextResponse(JSON.stringify(error_response), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}

@@ -1,7 +1,7 @@
-import User from '@/src/components/User'
+import User from '@/components/User'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
-import { authOptions } from '@/src/lib/auth';
+import { authOptions } from '@/lib/auth';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
