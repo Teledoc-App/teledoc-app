@@ -55,8 +55,7 @@ export const authOptions: NextAuthOptions = {
           return {
             id: `${existingUser.id}`,
             email: existingUser.email,
-            firstName: existingUser.role,
-            role: existingUser.role
+            role: existingUser.role, 
           }
         }
         
@@ -66,6 +65,7 @@ export const authOptions: NextAuthOptions = {
         // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role
         async jwt({ token, user }) {
           if (user) {
+            console.log(token);
             return {
               ...token,
               id: user.id,
