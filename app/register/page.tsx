@@ -1,13 +1,14 @@
 "use client";
 
 import Select from "react-select";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from 'next/navigation';
 import ImageKit from 'imagekit';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-
+import { useRouter } from "next/navigation";
+import GenderSelect from "@/components/GenderSelect";
+import RoleSelect from "@/components/RoleSelect";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -40,15 +41,20 @@ const imageKit = new ImageKit({
   privateKey: privateKeyEnv,
   urlEndpoint: urlEndpointEnv,
 });
+  birthdate: Date;
+  role: { label: string; value: string };
+}
 
-const genderOptions = [
-  { value: 'M', label: 'Male' },
-  { value: 'F', label: 'Female' },
-];
-const roleOptions = [
-  { value: 'patient', label: 'Patient' },
-  { value: 'doctor', label: 'Doctor' },
-];
+interface Gender {
+  value: string;
+  label: string;
+}
+
+interface Role {
+  value: string;
+  label: string;
+}
+        
 const Page = () => {
   const router = useRouter();
   const [date, setDate] = React.useState<Date>()
@@ -56,10 +62,10 @@ const Page = () => {
     value: 'M',
     label: 'Male',
   });
-  
-  const [selectedRole, setSelectedRole] = useState<{ value: string; label: string } | null>({
-    value: 'patient',
-    label: 'Patient',
+
+  const [selectedRole, setSelectedRole] = useState<Role>({
+    value: "patient",
+    label: "Patient",
   });
   const {
     register,
@@ -80,7 +86,7 @@ const Page = () => {
     const response = await fetch('/api/register', {
       method:'POST',
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify ({
         ...data,
@@ -247,29 +253,25 @@ const Page = () => {
         />
       </PopoverContent>
     </Popover>
-       {/*GENDER*/}
-       <Select
-        defaultValue={selectedGender}
-        onChange={setSelectedGender}
-        options={genderOptions}
-      />
-      {/*ROLE*/}
-       <Select
-        defaultValue={selectedRole}
-        onChange={setSelectedRole}
-        options={roleOptions}
-      />
+        {/*GENDER*/}
+        <GenderSelect
+          selectedGender={selectedGender}
+          setSelectedGender={setSelectedGender}
+        />
+        <RoleSelect
+          selectedRole={selectedRole}
+          setSelectedRole={setSelectedRole}
+        />
         {/* SUBMIT */}
         <button
           type="submit"
           className="bg-[#ff5757] rounded-lg w-full h-[60px] font-semibold"
         >
-         Register
+          Sign up
         </button>
         <span className="text-black">
-          Already have an account?
-          <a href="" className="text-[#ff5757]">
-            {" "}
+          Already have an account?{" "}
+          <a href="./login" className="text-[#ff5757] hover:underline">
             Sign In
           </a>
         </span>
