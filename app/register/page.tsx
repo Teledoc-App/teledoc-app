@@ -7,16 +7,16 @@ import ImageKit from 'imagekit';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { useRouter } from "next/navigation";
-import GenderSelect from "@/src/components/GenderSelect";
-import RoleSelect from "@/src/components/RoleSelect";
-import { cn } from "@/src/lib/utils"
-import { Button } from "@/src/components/ui/button"
-import { Calendar } from "@/src/components/ui/calendar"
+import GenderSelect from "@/components/GenderSelect";
+import RoleSelect from "@/components/RoleSelect";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/src/components/ui/popover"
+} from "@/components/ui/popover"
 
 
 

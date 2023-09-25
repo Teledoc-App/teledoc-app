@@ -6,6 +6,7 @@
     "user/router.ts",
     "user.service.ts",
     "app/login/page.tsx",
-    "register/page.tsx"
+    "register/page.tsx",
+    "delete src"
   ]
 }
