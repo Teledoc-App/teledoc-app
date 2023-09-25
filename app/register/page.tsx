@@ -41,9 +41,6 @@ const imageKit = new ImageKit({
   privateKey: privateKeyEnv,
   urlEndpoint: urlEndpointEnv,
 });
-  birthdate: Date;
-  role: { label: string; value: string };
-}
 
 interface Gender {
   value: string;
@@ -58,9 +55,9 @@ interface Role {
 const Page = () => {
   const router = useRouter();
   const [date, setDate] = React.useState<Date>()
-  const [selectedGender, setSelectedGender] = useState<{ value: string; label: string } | null>({
-    value: 'M',
-    label: 'Male',
+  const [selectedGender, setSelectedGender] = useState<Gender>({
+    value: "M",
+    label: "Male",
   });
 
   const [selectedRole, setSelectedRole] = useState<Role>({
