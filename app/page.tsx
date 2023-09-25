@@ -1,4 +1,4 @@
-import User from '@/components/user'
+import User from '@/components/User'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth';

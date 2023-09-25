@@ -13,9 +13,10 @@ export const authOptions: NextAuthOptions = {
         strategy: 'jwt',
     },
     
-    // pages: {
-    // signIn: '/login',
-    // },
+    pages: {
+    signIn: '/login',
+    signOut: '/',
+    },
     providers: [
       GoogleProvider({
           // profile(profile: GoogleProfile) {

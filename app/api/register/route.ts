@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { NextResponse,  } from "next/server";
 import { hash } from 'bcrypt';
 import { parseISO } from 'date-fns'; 
-
 import * as yup from 'yup'
 // Define a schema for input validation
 const userSchema = yup.object().shape({
