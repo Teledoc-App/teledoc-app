@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { ReactNode } from "react";
 import GoogleSignInButton from "@/components/GoogleSigninButton";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 interface Login {
   role: string;
   email: string;
