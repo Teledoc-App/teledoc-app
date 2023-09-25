@@ -3,16 +3,44 @@
 import Select from "react-select";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import ImageKit from 'imagekit';
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
 import { useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
-interface Login {
+
+
+interface Register {
   name: string;
   email: string;
   phone: number;
   password: string;
   gender: { label: string; value: string };
+  birthDate:  Date | null; 
+  role: { label: string; value: string }
+  image: string
+}
+
+//type Date = DatePiece | [DatePiece, DatePiece];
+const publicKeyEnv = process.env.NEXT_PUBLIC_KEY as string;
+const privateKeyEnv = process.env.NEXT_PUBLIC_PRIVATE_KEY as string;
+const urlEndpointEnv = process.env.NEXT_PUBLIC_URL_ENDPOINT as string;
+
+const imageKit = new ImageKit({
+  publicKey: publicKeyEnv,
+  privateKey: privateKeyEnv,
+  urlEndpoint: urlEndpointEnv,
+});
   birthdate: Date;
   role: { label: string; value: string };
 }
@@ -26,12 +54,13 @@ interface Role {
   value: string;
   label: string;
 }
-
+        
 const Page = () => {
   const router = useRouter();
-  const [selectedGender, setSelectedGender] = useState<Gender>({
-    value: "M",
-    label: "Male",
+  const [date, setDate] = React.useState<Date>()
+  const [selectedGender, setSelectedGender] = useState<{ value: string; label: string } | null>({
+    value: 'M',
+    label: 'Male',
   });
 
   const [selectedRole, setSelectedRole] = useState<Role>({
@@ -42,23 +71,41 @@ const Page = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Login>();
-  const onSubmit: SubmitHandler<Login> = async (data) => {
-    const response = await fetch("/api/register", {
-      method: "POST",
+  } = useForm<Register>();
+ 
+  const onSubmit: SubmitHandler<Register> = async (data) => {
+    try {
+      // Upload gambar ke ImageKit
+      const file = data.image[0]; // Ambil gambar dari form input
+      const imageKitResponse = await imageKit.upload({
+        file: file as any,
+        fileName: `${Date.now()}-${file}`,
+      });
+      const imageUrl = imageKitResponse.url;
+      
+    const response = await fetch('/api/register', {
+      method:'POST',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        data,
-      }),
-    });
+      body: JSON.stringify ({
+        ...data,
+        image: imageUrl, 
+        birthDate: date, 
+        role:selectedRole?.value,
+        gender: selectedGender?.value
+      })
+    })
     if (response.ok) {
-      router.push("/sign-in");
+      router.push('/login');
     } else {
-      console.error("Registration failed");
+      console.error('Registration failed');
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   return (
     // PAGE
     <div className="bg-white w-screen h-screen flex justify-center items-center px-4 py-8 overflow-y-scroll">
@@ -67,7 +114,17 @@ const Page = () => {
         className="w-full max-w-[400px] flex flex-col items-center gap-4 py-8"
       >
         <h1 className="text-[#ff5757] text-4xl font-bold">Teledoc</h1>
-
+{/*IMAGE*/}
+<input
+      type="file"
+      accept="image/*"
+      {...register("image", {
+        required: {
+          value: true,
+          message: "Image is a required field",
+        },
+      })}
+    />
         {/* LAST NAME */}
         <div className="w-full">
           <label className="text-black" htmlFor="lastName">
@@ -173,6 +230,29 @@ const Page = () => {
           />
           <p className="text-amber-500">{errors?.password?.message}</p>
         </div>
+        {/*BIRTHDATE*/}
+        <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn(
+            "w-[280px] justify-start text-left font-normal",
+            !date && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
         {/*GENDER*/}
         <GenderSelect
           selectedGender={selectedGender}
@@ -182,36 +262,6 @@ const Page = () => {
           selectedRole={selectedRole}
           setSelectedRole={setSelectedRole}
         />
-        {/* <RoleSelect/> */}
-        {/* <div className="w-full relative">
-          <label htmlFor="" className="text-black">
-            Gender
-          </label>
-          <button
-            type="button"
-            className="flex items-center px-4 w-full border border-[#d9d9d9] bg-[#d9d9d9]/30 text-black h-[60px] rounded-lg"
-          >
-            Male
-          </button>
-          <ul className="absolute bg-red-500 py-2 shadow-lg rounded-lg w-full mt-2">
-            <li className="text-black px-4 py-1 hover:cursor-pointer hover:bg-[#d9d9d9]/30">
-              Male
-            </li>
-            <li className="text-black px-4 py-1 hover:cursor-pointer hover:bg-[#d9d9d9]/30">
-              Female
-            </li>
-          </ul>
-        </div> */}
-        {/* <Select
-        defaultValue={selectedGender}
-        onChange={setSelectedGender}
-        options={genderOptions}
-      />
-       <Select
-        defaultValue={selectedRole}
-        onChange={setSelectedRole}
-        options={roleOptions}
-      /> */}
         {/* SUBMIT */}
         <button
           type="submit"

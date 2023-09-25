@@ -9,10 +9,10 @@ const userSchema = yup.object().shape({
     email: yup.string().email().required(),
     name: yup.string().required(),
     phone: yup.string().required(),
-    gender: yup.string().oneOf(['M', 'F', 'O']).required(),
+    gender: yup.string().required(),
     birthDate: yup.date().required(),
     password: yup.string().matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/).min(8).required(),
-    role: yup.string().oneOf(['patient', 'doctor']).required(),
+    role: yup.string().required(),
   });
 
 

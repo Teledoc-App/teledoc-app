@@ -4,23 +4,40 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { ReactNode } from "react";
 import GoogleSignInButton from "@/components/GoogleSigninButton";
+import { useRouter } from "next/navigation";
 
-interface Register {
+interface Login {
+  role: string;
   email: string;
   password: string;
 }
 
 const Page = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Register>();
-  const onSubmit: SubmitHandler<Register> = async (data) => {
-    const signInData = await signIn("credentials", {
-      data,
-    });
-  };
+  } = useForm<Login>();
+  const onSubmit: SubmitHandler<Login> = async (data) => {
+   const signInData = await signIn('credentials', {
+   data
+   }
+   );
+   if (signInData?.error) {
+    console.log(signInData.error);
+   } else {
+    // Check the user's role and navigate accordingly
+    const userRole = data.role; // You should have a way to get the user's role
+    if (userRole === 'patient') {
+      router.push('/profile/patient');
+    } else if (userRole === 'doctor') {
+      router.push('/profile/doctor');
+    } else {
+      console.error('Invalid user role:', userRole);
+    }
+  }
+}
 
   return (
     // PAGE CONTAINER
@@ -97,7 +114,7 @@ const Page = () => {
           </button>
         </form>
         <GoogleSignInButton>
-          <img
+          <Image width={35} height={35}
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1920px-Google_%22G%22_Logo.svg.png"
             alt="google-logo"
             className="w-[35px] absolute top-3 left-4"
