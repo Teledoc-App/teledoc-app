@@ -9,6 +9,8 @@
     "register/page.tsx",
     "delete src",
     "path",
-    "api-doc"
+    "api-doc",
+    "doctor api",
+    "merge main"
   ]
 }
