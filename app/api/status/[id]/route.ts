@@ -11,6 +11,7 @@ export async function GET(
         id,
       },
       select: {
+        id: true,
         name: true,
         appointments:{ 
             select: {

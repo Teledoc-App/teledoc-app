@@ -76,6 +76,7 @@ doctor: {
         where: { id },
         data: json,
         select: {
+          id: true,
             time: true,
             date: true,
     appointment: { 

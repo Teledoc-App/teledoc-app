@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     //   skip,
     //   take: limit,
     select: {
+      id: true,
         name: true,
         appointments:{ 
             select: {

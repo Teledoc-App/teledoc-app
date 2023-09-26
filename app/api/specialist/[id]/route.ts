@@ -11,6 +11,7 @@ export async function GET(
         id,
       },
       select: {
+        id: true,
         title: true,
         doctors:{
          select:{
