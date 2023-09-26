@@ -13,14 +13,6 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
-// import { cn } from "@/lib/utils";
-// import { Button } from "@/components/ui/button";
-// import { Calendar } from "@/components/ui/calendar";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
 
 interface Register {
   name: string;
@@ -33,7 +25,6 @@ interface Register {
   image: string;
 }
 
-//type Date = DatePiece | [DatePiece, DatePiece];
 const publicKeyEnv = process.env.NEXT_PUBLIC_KEY as string;
 const privateKeyEnv = process.env.NEXT_PUBLIC_PRIVATE_KEY as string;
 const urlEndpointEnv = process.env.NEXT_PUBLIC_URL_ENDPOINT as string;
@@ -127,9 +118,7 @@ const Page = () => {
               />
             </svg>
           </a>
-          <h1 className="text-[#ff5757] text-2xl font-bold">
-            Create New Account
-          </h1>
+          <h1 className="text-[#ff5757] text-2xl font-bold">Personal Detail</h1>
         </nav>
         {/* <p className="text-black">{register?.name}</p> */}
         {/*IMAGE*/}
@@ -318,14 +307,8 @@ const Page = () => {
           type="submit"
           className="bg-[#ff5757] rounded-lg w-full h-[60px] font-semibold text-white mt-8"
         >
-          Sign up
+          Update Profile
         </button>
-        <span className="text-black">
-          Already have an account?{" "}
-          <a href="./login" className="text-[#ff5757] hover:underline">
-            Sign In
-          </a>
-        </span>
       </form>
     </div>
   );

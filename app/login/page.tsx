@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { ReactNode } from "react";
 import GoogleSignInButton from "@/components/GoogleSigninButton";
+import GoogleIcon from "../../assets/google.svg";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 interface Login {
@@ -20,24 +21,23 @@ const Page = () => {
     formState: { errors },
   } = useForm<Login>();
   const onSubmit: SubmitHandler<Login> = async (data) => {
-   const signInData = await signIn('credentials', {
-   data
-   }
-   );
-   if (signInData?.error) {
-    console.log(signInData.error);
-   } else {
-    // Check the user's role and navigate accordingly
-    const userRole = data.role; // You should have a way to get the user's role
-    if (userRole === 'patient') {
-      router.push('/profile/patient');
-    } else if (userRole === 'doctor') {
-      router.push('/profile/doctor');
+    const signInData = await signIn("credentials", {
+      data,
+    });
+    if (signInData?.error) {
+      console.log(signInData.error);
     } else {
-      console.error('Invalid user role:', userRole);
+      // Check the user's role and navigate accordingly
+      const userRole = data.role; // You should have a way to get the user's role
+      if (userRole === "patient") {
+        router.push("/profile/patient");
+      } else if (userRole === "doctor") {
+        router.push("/profile/doctor");
+      } else {
+        console.error("Invalid user role:", userRole);
+      }
     }
-  }
-}
+  };
 
   return (
     // PAGE CONTAINER
@@ -47,7 +47,7 @@ const Page = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="w-full max-w-[400px] flex flex-col items-center gap-4"
         >
-          <h1 className="text-[#ff5757] text-4xl font-bold">Teledoc</h1>
+          <h1 className="text-[#ff5757] text-4xl font-bold">Sign In</h1>
           {/* EMAIL */}
           <div className="w-full">
             <label className="text-black" htmlFor="email">
@@ -70,7 +70,7 @@ const Page = () => {
                   message: "Entered value does not match email format",
                 },
               })}
-              className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-gray-400  w-full outline-none ${
+              className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
                 errors?.email
                   ? "border-amber-500 focus:border-amber-500"
                   : "focus:border-[#ff5757] border-[#d9d9d9]"
@@ -94,7 +94,7 @@ const Page = () => {
                   message: "Password is a required field",
                 },
               })}
-              className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-gray-400  w-full outline-none ${
+              className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border text-black  w-full outline-none ${
                 errors?.password
                   ? "border-amber-500 focus:border-amber-500"
                   : "focus:border-[#ff5757] border-[#d9d9d9]"
@@ -108,14 +108,17 @@ const Page = () => {
           {/* SUBMIT */}
           <button
             type="submit"
-            className="bg-[#ff5757] rounded-lg w-full h-[60px] font-semibold"
+            className="bg-[#ff5757] text-white rounded-lg w-full h-[60px] font-semibold mt-8"
           >
             Sign in
           </button>
         </form>
         <GoogleSignInButton>
-          <Image width={35} height={35}
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1920px-Google_%22G%22_Logo.svg.png"
+          <Image
+            width={35}
+            height={35}
+            src={GoogleIcon}
+            // src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1920px-Google_%22G%22_Logo.svg.png"
             alt="google-logo"
             className="w-[35px] absolute top-3 left-4"
           />
