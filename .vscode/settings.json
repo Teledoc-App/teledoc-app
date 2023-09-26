@@ -8,6 +8,7 @@
     "app/login/page.tsx",
     "register/page.tsx",
     "delete src",
-    "path"
+    "path",
+    "api-doc"
   ]
 }

@@ -2,10 +2,12 @@ generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -19,9 +21,11 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -50,6 +54,7 @@ model Specialist {
   updatedAt DateTime @default(now()) @updatedAt
   doctors   Doctor[]
 }
+
 model Appointment {
   id          String    @id @default(uuid())
   reason      String?
@@ -65,6 +70,7 @@ model Appointment {
   timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
   timeSlotId  String?
 }
+
 model Status {
   id           String        @id @default(uuid())
   name         String        @unique // "Available" | "Pending" |  "Rejected" | "Accepted" | "Done"
@@ -72,12 +78,14 @@ model Status {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
 }
+
 model TimeSlot {
   id          String        @id @default(uuid())
   time        String
   date        DateTime
   appointment Appointment[]
 }
+
 model User {
   id                  String        @id @default(uuid())
   name                String
@@ -97,14 +105,17 @@ model User {
   Account             Account[]
   Session             Session[]
 }
+
 enum UserGender {
   F
   M
   O
 }
+
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+
   @@unique([identifier, token])
 }

@@ -4,15 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest,
   ) {
   try {
-    const query = new URLSearchParams(req.url).get("query");
-
     // Using findMany to search for users based on the filter
     const users = await db.user.findMany({
-      where: {
-        name: {
-          contains: query || "", // If query is missing, use an empty string
-        },
-      },
       select: {
         id: true,
         name: true,

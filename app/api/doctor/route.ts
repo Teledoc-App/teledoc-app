@@ -4,13 +4,19 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   try {
     const doctors = await db.doctor.findMany({
+      where: {
+        user: {
+          role:'doctor',
+        },
+      },
       select: {
         username: true,
         strNumber: true,
         price: true,
         specialist: true,
         user: {
-          include: {
+          select: {
+            role: true,
             doctorAppointments: {
               select: {
                 timeSlot: {
