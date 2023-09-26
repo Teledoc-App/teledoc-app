@@ -16,15 +16,28 @@ export async function GET(req: Request) {
         specialist: true,
         user: {
           select: {
+            image: true,
             role: true,
             doctorAppointments: {
               select: {
+                status: true,
+                reason: true,
+                description: true,
                 timeSlot: {
                   select: {
                     time: true,
                     date: true,
                   },
                 },
+                patient: {
+                  select: {
+                    name :true,
+                    gender: true,
+                    birthDate: true,
+                    image: true,
+                    phone: true,
+                  }
+                }
               },
             },
           },

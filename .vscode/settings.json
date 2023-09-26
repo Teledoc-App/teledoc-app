@@ -11,6 +11,7 @@
     "path",
     "api-doc",
     "doctor api",
-    "merge main"
+    "merge main",
+    "pnpm-lock.yaml"
   ]
 }
