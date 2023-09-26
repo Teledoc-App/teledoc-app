@@ -8,7 +8,7 @@ const HistoryCards = ({}) => {
       <div className="flex flex-col">
         <div className="gambar">gambar</div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col px-5">
         <div className="gambar">dr.sledge hammer</div>
         <div className="text">dokter gigi</div>
         <div className="text-blue-600">done</div>
