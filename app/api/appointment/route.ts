@@ -16,6 +16,8 @@ export async function GET(request: NextRequest) {
     select: {
       reason: true,
       description: true,
+      time: true,
+      date: true,
       patient: {
         select: {
           name: true,
@@ -30,12 +32,6 @@ export async function GET(request: NextRequest) {
               username: true,
             },
           },
-        },
-      },
-      timeSlot: {
-        select: {
-          time: true,
-          date: true,
         },
       },
       status: {

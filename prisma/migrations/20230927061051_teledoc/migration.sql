@@ -56,12 +56,13 @@ CREATE TABLE "Appointment" (
     "id" TEXT NOT NULL,
     "reason" TEXT,
     "description" TEXT,
+    "time" TEXT,
+    "date" TIMESTAMP(3),
     "statusId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "patientId" TEXT,
     "doctorId" TEXT NOT NULL,
-    "timeSlotId" TEXT,
 
     CONSTRAINT "Appointment_pkey" PRIMARY KEY ("id")
 );
@@ -74,15 +75,6 @@ CREATE TABLE "Status" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Status_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "TimeSlot" (
-    "id" TEXT NOT NULL,
-    "time" TEXT NOT NULL,
-    "date" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "TimeSlot_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -157,6 +149,3 @@ ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patientId_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_timeSlotId_fkey" FOREIGN KEY ("timeSlotId") REFERENCES "TimeSlot"("id") ON DELETE SET NULL ON UPDATE CASCADE;

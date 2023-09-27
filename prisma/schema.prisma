@@ -59,6 +59,8 @@ model Appointment {
   id          String    @id @default(uuid())
   reason      String?
   description String?
+  time        String?
+  date        DateTime?
   statusId    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
@@ -67,8 +69,6 @@ model Appointment {
   patient     User?     @relation(fields: [patientId], references: [id], "patient")
   doctorId    String
   doctor      User      @relation(fields: [doctorId], references: [id], "doctor")
-  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
-  timeSlotId  String?
 }
 
 model Status {
@@ -79,12 +79,12 @@ model Status {
   updatedAt    DateTime      @default(now()) @updatedAt
 }
 
-model TimeSlot {
-  id          String        @id @default(uuid())
-  time        String
-  date        DateTime
-  appointment Appointment[]
-}
+// model TimeSlot {
+//   id          String        @id @default(uuid())
+//   time        String
+//   date        DateTime
+//   appointment Appointment[]
+// }
 
 model User {
   id                  String        @id @default(uuid())
