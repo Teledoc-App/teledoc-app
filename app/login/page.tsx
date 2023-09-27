@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { ReactNode } from "react";
@@ -7,6 +8,7 @@ import GoogleSignInButton from "@/components/GoogleSigninButton";
 import GoogleIcon from "../../assets/google.svg";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+
 interface Login {
   role: string;
   email: string;
@@ -19,25 +21,44 @@ const Page = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Login>();
-  const onSubmit: SubmitHandler<Login> = async (data) => {
-    const signInData = await signIn("credentials", {
-      data,
-    });
-    if (signInData?.error) {
-      console.log(signInData.error);
-    } else {
-      // Check the user's role and navigate accordingly
-      const userRole = data.role; // You should have a way to get the user's role
-      if (userRole === "patient") {
-        router.push("/profile/patient");
-      } else if (userRole === "doctor") {
-        router.push("/profile/doctor");
-      } else {
-        console.error("Invalid user role:", userRole);
-      }
+
+  const onSubmit: SubmitHandler<Login> = async (data, e) => {
+    e?.preventDefault();
+    // const { data: session, status } = useSession();
+    // const signInData = await signIn("credentials", {
+    //   data,
+    // });
+    try {
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
   };
+  // if (signInData?.error) {
+  //   console.log(signInData.error);
+  // } else {
+  //   const userRole = data.role;
+  //   if (userRole === "patient") {
+  //     router.replace("/profile/patient");
+  //   } else if (userRole === "doctor") {
+  //     router.replace("/profile/doctor");
+  //   } else {
+  //     console.error("Invalid user role:", userRole);
+  //   }
+  // }
+  // console.log(signInData);
 
   return (
     // PAGE CONTAINER
@@ -118,7 +139,6 @@ const Page = () => {
             width={35}
             height={35}
             src={GoogleIcon}
-            // src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1920px-Google_%22G%22_Logo.svg.png"
             alt="google-logo"
             className="w-[35px] absolute top-3 left-4"
           />
