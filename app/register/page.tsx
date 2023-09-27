@@ -272,9 +272,19 @@ const Page = () => {
             placeholder="Enter your password"
             defaultValue=""
             {...register("password", {
+              minLength: {
+                value: 8,
+                message: "Password needs to be at least 8 characters",
+              },
               required: {
                 value: true,
                 message: "Password is a required field",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/,
+                message:
+                  "Password needs uppercase, lowercase, number, special character",
               },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black w-full outline-none ${
