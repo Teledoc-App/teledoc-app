@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { type } from "os";
 
 interface specialistProps {
 	id: string;
@@ -21,7 +20,7 @@ interface listDoctorProps {
 
 const listDoctors: React.FC<listDoctorProps> = ({ userId, username, price, specialist, user }) => {
 	return (
-		<div className="flex justify-center items-center mt-4">
+		<div className="flex justify-center items-center">
 			<Link rel="stylesheet" href={`/doctors/appointment/${userId}`}>
 				<div className="container flex bg-[#d9d9d9]/30 h-[120px] w-[400px]  px-4 rounded-lg border text-gray-400 outline-none">
 					<div className="p-2 flex items-center">
