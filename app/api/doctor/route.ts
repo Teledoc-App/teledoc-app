@@ -21,15 +21,11 @@ export async function GET(req: Request) {
             role: true,
             doctorAppointments: {
               select: {
+                time: true,
+                date: true,
                 status: true,
                 reason: true,
                 description: true,
-                timeSlot: {
-                  select: {
-                    time: true,
-                    date: true,
-                  },
-                },
                 patient: {
                   select: {
                     name :true,

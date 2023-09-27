@@ -13,6 +13,8 @@ export async function GET(
     select: {
       reason: true,
       description: true,
+      time: true,
+      date: true,
       patient: {
         select: {
           name: true,
@@ -27,12 +29,6 @@ export async function GET(
               username: true,
             },
           },
-        },
-      },
-      timeSlot: {
-        select: {
-          time: true,
-          date: true,
         },
       },
       status: {
@@ -77,6 +73,8 @@ export async function PATCH(
       select: {
         reason: true,
         description: true,
+        time: true,
+        date: true,
         patient: {
           select: {
             name: true,
@@ -91,12 +89,6 @@ export async function PATCH(
                 username: true,
               },
             },
-          },
-        },
-        timeSlot: {
-          select: {
-            time: true,
-            date: true,
           },
         },
         status: {
