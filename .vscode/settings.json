@@ -12,6 +12,7 @@
     "api-doc",
     "doctor api",
     "merge main",
-    "pnpm-lock.yaml"
+    "pnpm-lock.yaml",
+    "api appointment "
   ]
 }

@@ -40,12 +40,8 @@ export async function GET(req: NextRequest) {
             },
             reason: true,
             description: true,
-            timeSlot: {
-              select: {
-                time: true,
-                date: true,
-              }
-            },
+            time: true,
+            date: true,
             status: {
               select: {
                 name: true
@@ -64,12 +60,8 @@ export async function GET(req: NextRequest) {
             },
             reason: true,
             description: true,
-            timeSlot: {
-              select: {
-                time: true,
-                date: true,
-              }
-            },
+            time: true,
+            date: true,
             status: {
               select: {
                 name: true
