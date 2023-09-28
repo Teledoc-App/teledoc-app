@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React from "react";
 
 const Success: React.FC = () => {
@@ -34,9 +35,11 @@ const Success: React.FC = () => {
 					</p>
 				</div>
 				<div className="flex justify-center">
-					<button className="bg-[#ff5757] w-[400px] text-white px-4 py-1 rounded-xl mt-3">
-						Back to Home
-					</button>
+					<Link href={"/homepagepatient"}>
+						<button className="bg-[#ff5757] w-[400px] text-white px-4 py-1 rounded-xl mt-3">
+							Back to Home
+						</button>
+					</Link>
 				</div>
 			</div>
 		</div>

@@ -20,7 +20,7 @@ interface listDoctorProps {
 
 const listDoctors: React.FC<listDoctorProps> = ({ userId, username, price, specialist, user }) => {
 	return (
-		<div className="flex justify-center items-center">
+		<div className="flex justify-center items-center py-2">
 			<Link rel="stylesheet" href={`/doctors/appointment/${userId}`}>
 				<div className="container flex bg-[#d9d9d9]/30 h-[120px] w-[400px]  px-4 rounded-lg border text-gray-400 outline-none">
 					<div className="p-2 flex items-center">
@@ -34,12 +34,12 @@ const listDoctors: React.FC<listDoctorProps> = ({ userId, username, price, speci
 							width={200}
 							height={200}
 						/>
-						<div className="p-7">
+						<div className="px-7">
 							<h1 className="text-[#000000] text-xl font-bold">{username}</h1>
 							<p className="text-[#858585] text-m">{specialist.title}</p>
 
 							{/* <button className="bg-[#ff5757] text-white px-4 py-1 rounded-2xl mt-3">Book</button> */}
-							<p className="text-[#ff5757] font-bold text-m mt-5">Rp. {price}</p>
+							<p className="text-[#ff5757] font-bold text-m mt-5">{price}</p>
 						</div>
 					</div>
 				</div>

@@ -23,10 +23,19 @@ type listDoctorProps = {
 
 const Doctors: React.FC = () => {
 	const [doctors, setDoctors] = useState<listDoctorProps[]>([]);
+	const [keyword, setSKeyword] = useState("");
+	const [specialist, setSpecialist] = useState("");
+
+	const displayedDoctors = doctors.filter((doctor) => {
+		const sLowDocName = doctor.username.toLowerCase();
+		const sLowKeyword = keyword.toLowerCase();
+
+		return sLowDocName.includes(sLowKeyword) && doctor.specialist.title.includes(specialist);
+	});
 
 	useEffect(() => {
 		// Fetch data from the API
-		fetch("https://www.teledoc.tech/api/doctor")
+		fetch("http://localhost:3000/api/doctor")
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -60,17 +69,22 @@ const Doctors: React.FC = () => {
 						id="lastName"
 						type="text"
 						placeholder="Search"
+						value={keyword}
+						onChange={(e) => setSKeyword(e.target.value)}
 						className="bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black w-full outline-none"
 					/>
 				</div>
 
 				<div className="w-full">
-					{doctors.map((doctor) => (
+					{displayedDoctors.map((doctor) => (
 						<DoctorCard
 							key={doctor.userId}
 							userId={doctor.userId}
 							username={doctor.username}
-							price={doctor.price.toLocaleString("id")}
+							price={doctor.price.toLocaleString("id-ID", {
+								style: "currency",
+								currency: "IDR",
+							})}
 							specialist={doctor.specialist}
 							user={doctor.user}
 						/>
