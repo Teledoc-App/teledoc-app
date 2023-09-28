@@ -10,21 +10,24 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
   const router = useRouter();
 
   const loginWithGoogle = async () => {
+    const userRole = session?.user?.role;
+    let callbackUrl = "/profile/";
+
+    if (userRole === 'patient') {
+      callbackUrl += 'patient';
+    } else if (userRole === 'doctor') {
+      callbackUrl += 'doctor';
+    } else {
+      console.error('Invalid user role:', userRole);
+      return;
+    }
     const signInData = await signIn('google', {
-      callbackUrl: process.env.NEXTAUTH_CALLBACK_URL, 
-    });
+    callbackUrl: callbackUrl,});
 
     if (signInData?.error) {
       console.error(signInData.error);
     } else {
-      const userRole = session?.user?.role;
-      if (userRole === 'patient') {
-        router.push('/profile/patient');
-      } else if (userRole === 'doctor') {
-        router.push('/profile/doctor');
-      } else {
-        console.error('Invalid user role:', userRole);
-      }
+      router.push(callbackUrl);
     }
   };
 

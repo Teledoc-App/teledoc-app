@@ -60,7 +60,7 @@ interface Role {
 const Page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [date, setDate] = React.useState<Date>();
+  const [birthDate, setBirthDate] = React.useState<Date | null>(null);
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedGender, setSelectedGender] = useState<Gender>({
     value: "M",
@@ -102,7 +102,7 @@ const Page = () => {
         body: JSON.stringify({
           ...data,
           image: imageUrl,
-          birthDate: date,
+          birthDate: birthDate,
           role: selectedRole?.value,
           gender: selectedGender?.value,
         }),
@@ -122,12 +122,12 @@ const Page = () => {
 
   return (
     // PAGE
-    <div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 overflow-y-scroll">
+    <div className="flex items-center justify-center w-screen px-4 py-4 overflow-y-scroll bg-white h-fit">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 overflow-y-scroll"
       >
-        <nav className="flex justify-center items-center w-full relative">
+        <nav className="relative flex items-center justify-center w-full">
           <a href="./login" className="absolute left-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -168,7 +168,7 @@ const Page = () => {
           <button className="relative border border-[#ff5757] rounded-full overflow-hidden hover:cursor-pointer px-3 py-1">
             <p className="text-[#ff5757] hover:cursor-pointer">Choose file</p>
             <input
-              className="w-full h-full bg-blue-300 z-20 absolute top-0 left-0 opacity-0 hover:cursor-pointer"
+              className="absolute top-0 left-0 z-20 w-full h-full bg-blue-300 opacity-0 hover:cursor-pointer"
               type="file"
               accept="image/*"
               {...register("image", {
@@ -296,9 +296,12 @@ const Page = () => {
           <p className="text-amber-500">{errors?.password?.message}</p>
         </div>
         {/*BIRTHDATE*/}
-        <p className="text-black text-left w-full -mb-4">Birth Date</p>
+        <p className="w-full -mb-4 text-left text-black">Birth Date</p>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
+          label="Birth Date"
+          value={birthDate}
+          onChange={(date) => setBirthDate(date)}
             format="YYYY - MM - DD"
             sx={{
               width: "100%",
@@ -309,28 +312,7 @@ const Page = () => {
             }}
           />
         </LocalizationProvider>
-        {/* <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-[280px] justify-start text-left font-normal",
-                !date && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover> */}
+        
         {/*GENDER*/}
         <GenderSelect
           selectedGender={selectedGender}
