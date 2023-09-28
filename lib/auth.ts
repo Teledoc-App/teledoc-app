@@ -40,29 +40,11 @@ export const authOptions: NextAuthOptions = {
             return null;
            }
            if(existingUser.password) {
-             const passwordMatch = await compare(credentials.password, existingUser.password);
-             if (!passwordMatch){
-              return null;
-            }
+            const passwordMatch = await compare(credentials.password, existingUser.password);
+            if (!passwordMatch){
+             return null;
            }
-          return {
-            id: `${existingUser.id}`,
-            email: existingUser.email,
-            role: existingUser.role, 
           }
-        }
-        const existingUser = await db.user.findUnique({
-          where: { email: credentials?.email },
-        });
-        if (!existingUser) {
-          return null;
-        }
-        const passwordMatch = existingUser.password
-          ? await compare(credentials.password, existingUser.password)
-          : false;
-        if (!passwordMatch) {
-          return null;
-        }
         return {
           id: `${existingUser.id}`,
           email: existingUser.email,
