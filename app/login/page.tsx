@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
 import { ReactNode } from "react";
@@ -7,6 +8,7 @@ import GoogleSignInButton from "@/components/GoogleSigninButton";
 import GoogleIcon from "../../assets/google.svg";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+
 interface Login {
   role: string;
   email: string;
@@ -19,6 +21,7 @@ const Page = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Login>();
   const { data: session } = useSession(); 
   const onSubmit: SubmitHandler<Login> = async (data) => {
@@ -38,6 +41,19 @@ const Page = () => {
       }
     }
   };
+  // if (signInData?.error) {
+  //   console.log(signInData.error);
+  // } else {
+  //   const userRole = data.role;
+  //   if (userRole === "patient") {
+  //     router.replace("/profile/patient");
+  //   } else if (userRole === "doctor") {
+  //     router.replace("/profile/doctor");
+  //   } else {
+  //     console.error("Invalid user role:", userRole);
+  //   }
+  // }
+  // console.log(signInData);
 
   return (
     // PAGE CONTAINER

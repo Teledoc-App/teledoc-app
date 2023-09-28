@@ -1,10 +1,9 @@
 import { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "./db";
 import { compare } from "bcrypt";
-
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(db),
@@ -52,41 +51,51 @@ export const authOptions: NextAuthOptions = {
             role: existingUser.role, 
           }
         }
-        
-      }),
-      ],
-      callbacks: {
-        // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role
-        async jwt({ token, user }) {
-          if (user) {
-            console.log(token);
-            return {
-              ...token,
-              id: user.id,
-              role: user.role,
-            }
-          }
-          return token;
-        },
-        // If you want to use the role in client components
-        async session({ session, token }) {
-            console.log(token);
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: token.id,
-                    role: token.role,
-                }
-            }
-            return session;
+        const existingUser = await db.user.findUnique({
+          where: { email: credentials?.email },
+        });
+        if (!existingUser) {
+          return null;
+        }
+        const passwordMatch = existingUser.password
+          ? await compare(credentials.password, existingUser.password)
+          : false;
+        if (!passwordMatch) {
+          return null;
+        }
+        return {
+          id: `${existingUser.id}`,
+          email: existingUser.email,
+          role: existingUser.role,
+        };
       },
-    }
-  }
-  
-
-
-
-
-
-
+    }),
+  ],
+  callbacks: {
+    // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role
+    async jwt({ token, user }) {
+      if (user) {
+        console.log(token);
+        return {
+          ...token,
+          id: user.id,
+          role: user.role,
+        };
+      }
+      return token;
+    },
+    // If you want to use the role in client components
+    async session({ session, token }) {
+      console.log(token);
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          role: token.role,
+        },
+      };
+      return session;
+    },
+  },
+};

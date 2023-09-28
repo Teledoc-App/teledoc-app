@@ -4,69 +4,6 @@
 import React, { useEffect, useState } from "react";
 import DoctorCard from "@/components/doctorCard";
 
-// const doctors = [
-// 	{
-// 		id: 1,
-// 		name: "Dr. John Doe",
-// 		specialist: "Cardiologist",
-// 		imageSrc: "https://picsum.photos/200", // Replace with the actual image path
-// 		price: "Rp. 100.000",
-// 	},
-// 	{
-// 		id: 2,
-// 		name: "Dr. Jane Smith",
-// 		specialist: "Dermatologist",
-// 		imageSrc: "https://picsum.photos/200", // Replace with the actual image path
-// 		price: "Rp. 150.000",
-// 	},
-// 	{
-// 		id: 3,
-// 		name: "Dr. Michael Johnson",
-// 		specialist: "Pediatrician",
-// 		imageSrc: "https://picsum.photos/200", // Replace with the actual image path
-// 		price: "Rp. 120.000",
-// 	},
-// ];
-
-// interface Doctor {
-// 	userId: string;
-// 	username: string;
-// 	strNumber: string;
-// 	price: any;
-// 	specialist: {
-// 		id: string;
-// 		title: string;
-// 		image: string | null;
-// 		createdAt: string;
-// 		updatedAt: string;
-// 	};
-// 	user: {
-// 		image: string;
-// 		role: string;
-// 		doctorAppointments: {
-// 			status: {
-// 				id: string;
-// 				name: string;
-// 				createdAt: string;
-// 				updatedAt: string;
-// 			};
-// 			reason: string | null;
-// 			description: string | null;
-// 			timeSlot: {
-// 				time: string;
-// 				date: string;
-// 			};
-// 			patient: {
-// 				name: string;
-// 				gender: string | null;
-// 				birthDate: string | null;
-// 				image: string;
-// 				phone: string | null;
-// 			};
-// 		}[];
-// 	};
-// }
-
 type specialistProps = {
 	id: string;
 	title: string;
@@ -86,10 +23,19 @@ type listDoctorProps = {
 
 const Doctors: React.FC = () => {
 	const [doctors, setDoctors] = useState<listDoctorProps[]>([]);
+	const [keyword, setSKeyword] = useState("");
+	const [specialist, setSpecialist] = useState("");
+
+	const displayedDoctors = doctors.filter((doctor) => {
+		const sLowDocName = doctor.username.toLowerCase();
+		const sLowKeyword = keyword.toLowerCase();
+
+		return sLowDocName.includes(sLowKeyword) && doctor.specialist.title.includes(specialist);
+	});
 
 	useEffect(() => {
 		// Fetch data from the API
-		fetch("https://www.teledoc.tech/api/doctor")
+		fetch("http://localhost:3000/api/doctor")
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -98,40 +44,53 @@ const Doctors: React.FC = () => {
 			.catch((error) => console.error("Error fetching data:", error));
 	}, []);
 	return (
-		<div className="container h-screen  bg-white items-center justify-center p-5">
-			<div className="flex justify-center items-center">
-				<div className="flex mr-6 items-center">
-					<h1 className="text-[#ff5757] text-3xl font-bold">All Doctor</h1>
-				</div>
-			</div>
-			<div className="flex justify-center items-center mt-7">
-				<input
-					className="bg-[#d9d9d9]/30 h-[40px] w-[400px]  px-4 rounded-lg border text-[#000000] outline-none"
-					type="text"
-					placeholder="Search"
-				/>
-			</div>
+		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
+			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
+				<nav className="flex justify-center items-center w-full relative">
+					<a href="./login" className="absolute left-0">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+							className="w-6 h-6"
+						>
+							<path
+								fillRule="evenodd"
+								d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z"
+								clipRule="evenodd"
+							/>
+						</svg>
+					</a>
+					<h1 className="text-[#ff5757] text-2xl font-bold">All Doctor</h1>
+				</nav>
 
-			<div className="flex justify-center items-center mt-2">
-				{/* <input
-					className="bg-[#d9d9d9]/30 h-[40px] w-[400px]  px-4 rounded-lg border text-[#000000] outline-none"
-					type="text"
-					placeholder="Search"
-				/> */}
-			</div>
-
-			<div className="mt-4">
-				{doctors.map((doctor) => (
-					<DoctorCard
-						key={doctor.userId}
-						userId={doctor.userId}
-						username={doctor.username}
-						price={doctor.price}
-						specialist={doctor.specialist}
-						user={doctor.user}
+				<div className="w-full py-5">
+					<input
+						id="lastName"
+						type="text"
+						placeholder="Search"
+						value={keyword}
+						onChange={(e) => setSKeyword(e.target.value)}
+						className="bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black w-full outline-none"
 					/>
-				))}
-			</div>
+				</div>
+
+				<div className="w-full">
+					{displayedDoctors.map((doctor) => (
+						<DoctorCard
+							key={doctor.userId}
+							userId={doctor.userId}
+							username={doctor.username}
+							price={doctor.price.toLocaleString("id-ID", {
+								style: "currency",
+								currency: "IDR",
+							})}
+							specialist={doctor.specialist}
+							user={doctor.user}
+						/>
+					))}
+				</div>
+			</form>
 		</div>
 	);
 };

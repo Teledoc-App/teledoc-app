@@ -4,15 +4,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import IconRolling from "../../assets/rolling.svg";
+
 import Select from "react-select";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ImageKit from "imagekit";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
+import Image from "next/image";
 // import { cn } from "@/lib/utils";
 // import { Button } from "@/components/ui/button";
 // import { Calendar } from "@/components/ui/calendar";
@@ -56,7 +59,9 @@ interface Role {
 
 const Page = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [date, setDate] = React.useState<Date>();
+  const [selectedImage, setSelectedImage] = useState("");
   const [selectedGender, setSelectedGender] = useState<Gender>({
     value: "M",
     label: "Male",
@@ -69,10 +74,17 @@ const Page = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Register>();
+  const watchImage = watch("image", "");
+
+  useEffect(() => {
+    console.log(watchImage);
+  }, [watchImage]);
 
   const onSubmit: SubmitHandler<Register> = async (data) => {
+    setIsLoading(true);
     try {
       // Upload gambar ke ImageKit
       const file = data.image[0]; // Ambil gambar dari form input
@@ -96,12 +108,15 @@ const Page = () => {
         }),
       });
       if (response.ok) {
-        router.push("/login");
+        console.log("Registration successful");
+        router.replace("/login");
       } else {
         console.error("Registration failed");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
     }
   };
 
@@ -131,7 +146,9 @@ const Page = () => {
             Create New Account
           </h1>
         </nav>
-        {/* <p className="text-black">{register?.name}</p> */}
+
+        {/* <h1 className="text-black">{watchImage}</h1> */}
+
         {/*IMAGE*/}
         <div className="flex flex-col items-center gap-4">
           <div className="w-[150px] h-[150px] rounded-full">
@@ -165,11 +182,11 @@ const Page = () => {
         </div>
         {/* LAST NAME */}
         <div className="w-full">
-          <label className="text-black" htmlFor="lastName">
+          <label className="text-black" htmlFor="name">
             Name
           </label>
           <input
-            id="lastName"
+            id="name"
             type="text"
             placeholder="Enter your last name"
             defaultValue=""
@@ -255,9 +272,19 @@ const Page = () => {
             placeholder="Enter your password"
             defaultValue=""
             {...register("password", {
+              minLength: {
+                value: 8,
+                message: "Password needs to be at least 8 characters",
+              },
               required: {
                 value: true,
                 message: "Password is a required field",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/,
+                message:
+                  "Password needs uppercase, lowercase, number, special character",
               },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black w-full outline-none ${
@@ -316,9 +343,14 @@ const Page = () => {
         {/* SUBMIT */}
         <button
           type="submit"
-          className="bg-[#ff5757] rounded-lg w-full h-[60px] font-semibold text-white mt-8"
+          className="bg-[#ff5757] disabled:bg-[#d9d9d9] rounded-lg w-full h-[60px] font-semibold text-white mt-8 flex justify-center items-center"
+          disabled={isLoading ? true : false}
         >
-          Sign up
+          {isLoading ? (
+            <Image width={40} height={40} src={IconRolling} alt="" />
+          ) : (
+            "Sign up"
+          )}
         </button>
         <span className="text-black">
           Already have an account?{" "}

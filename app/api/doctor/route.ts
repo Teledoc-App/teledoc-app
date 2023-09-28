@@ -6,7 +6,7 @@ export async function GET(req: Request) {
     const doctors = await db.doctor.findMany({
       where: {
         user: {
-          role: 'doctor',
+          role: "doctor",
         },
       },
       select: {
@@ -28,13 +28,13 @@ export async function GET(req: Request) {
                 description: true,
                 patient: {
                   select: {
-                    name :true,
+                    name: true,
                     gender: true,
                     birthDate: true,
                     image: true,
                     phone: true,
-                  }
-                }
+                  },
+                },
               },
             },
           },
