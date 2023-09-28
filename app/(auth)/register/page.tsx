@@ -4,7 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import IconRolling from "../../assets/rolling.svg";
+import IconRolling from "../../../assets/rolling.svg";
 
 import Select from "react-select";
 import React, { useEffect, useState } from "react";
