@@ -125,6 +125,7 @@ const Page = () => {
             >
               Sign in
             </Button>
+          </form>
             <GoogleSignInButton>
               <Image
                 width={35}
@@ -135,7 +136,6 @@ const Page = () => {
               />
               Sign in with Google
             </GoogleSignInButton>
-          </form>
           <span className="text-black">
             Dont have an account?{" "}
             <a href="./register" className="text-[#ff5757] hover:underline">
