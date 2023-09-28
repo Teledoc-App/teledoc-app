@@ -45,9 +45,9 @@ const Page = () => {
         let callbackUrl = "/profile/";
     
         if (userRole === "patient") {
-          callbackUrl += "patient";
+          callbackUrl += "patient/${id}";
         } else if (userRole === "doctor") {
-          callbackUrl += "doctor";
+          callbackUrl += "doctor/${id}";
         } else {
           console.error("Invalid user role:", userRole);
           return;
