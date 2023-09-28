@@ -2,12 +2,14 @@
 
 import React from "react";
 import { useSession } from "next-auth/react";
+
+
 const patientProfile: React.FC = () => {
-	const { data: session } = useSession();
+	//const { data: session } = useSession();
 	return (
-		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
+		<div className="flex items-center justify-center w-screen px-4 py-4 bg-white h-fit ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
-				<nav className="flex justify-center items-center w-full relative">
+				<nav className="relative flex items-center justify-center w-full">
 					<a href="./login" className="absolute left-0">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -25,17 +27,17 @@ const patientProfile: React.FC = () => {
 					<h1 className="text-[#ff5757] text-2xl font-bold">Profile</h1>
 				</nav>
 				<div className="w-[150px] h-[150px] m-5 rounded-full">
-					<img
-						className=" rounded-full"
+					{/* <img
+						className="rounded-full "
 						src={session?.user?.image || "https://i.pravatar.cc/200"}
 						alt="Profile picture"
 						width={200}
 						height={200}
-					/>
+					/> */}
 				</div>
 
 				<div>
-					<h1 className="text-[#000000] text-xl font-bold">{session?.user?.name}</h1>
+					{/* <h1 className="text-[#000000] text-xl font-bold">{session?.user?.name}</h1> */}
 				</div>
 
 				<div className="flex  items-center pt-5 w-[400px]">

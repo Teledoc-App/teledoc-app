@@ -29,7 +29,7 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
     if (signInData?.error) {
       console.error(signInData.error);
     } else {
-      router.push(callbackUrl);
+      return router.push(callbackUrl);
     }
   };
 
