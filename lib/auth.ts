@@ -6,39 +6,50 @@ import { db } from "./db";
 import { compare } from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
+    adapter: PrismaAdapter(db),
+    secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        strategy: 'jwt',
+    },
+    
+    pages: {
+    signIn: '/login',
+    signOut: '/',
+    },
+    providers: [
+      GoogleProvider({
 
-  pages: {
-    signIn: "/login",
-    signOut: "/",
-  },
-  providers: [
-    GoogleProvider({
-      // profile(profile: GoogleProfile) {
-      //     //console.log(profile)
-      //     return {
-      //         ...profile,
-      //         role: profile.role ?? "patient",
-      //         id: profile.id.toString(),
-      //         image: profile.avatar_url,
-      //     }
-      // },
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "gmail", type: "Email", placeholder: "jhon@gmail.com" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
+        clientId: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        
+      }),
+        CredentialsProvider({
+          name: "Credentials",
+          credentials: {
+            email: { label: "gmail", type: "Email", placeholder: "jhon@gmail.com" },
+            password: { label: "Password", type: "password" }
+          },
+          async authorize(credentials) {
+            if(!credentials?.email || !credentials?.password ){
+                return null;
+            }
+           const existingUser = await db.user.findUnique({
+            where:{email: credentials?.email}
+           })
+           if (!existingUser){
+            return null;
+           }
+           if(existingUser.password) {
+             const passwordMatch = await compare(credentials.password, existingUser.password);
+             if (!passwordMatch){
+              return null;
+            }
+           }
+          return {
+            id: `${existingUser.id}`,
+            email: existingUser.email,
+            role: existingUser.role, 
+          }
         }
         const existingUser = await db.user.findUnique({
           where: { email: credentials?.email },

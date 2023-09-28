@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { ReactNode } from "react";
 import GoogleSignInButton from "@/components/GoogleSigninButton";
 import GoogleIcon from "../../assets/google.svg";
@@ -23,27 +23,22 @@ const Page = () => {
     formState: { errors },
     reset,
   } = useForm<Login>();
-
-  const onSubmit: SubmitHandler<Login> = async (data, e) => {
-    e?.preventDefault();
-    // const { data: session, status } = useSession();
-    // const signInData = await signIn("credentials", {
-    //   data,
-    // });
-    try {
-      const response = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+  const { data: session } = useSession(); 
+  const onSubmit: SubmitHandler<Login> = async (data) => {
+    const signInData = await signIn("credentials", {
+      data,
+    });
+    if (signInData?.error) {
+      console.log(signInData.error);
+    } else {
+      const userRole = session?.user?.role; 
+      if (userRole === "patient") {
+        router.push("/profile/patient");
+      } else if (userRole === "doctor") {
+        router.push("/profile/doctor");
+      } else {
+        console.error("Invalid user role:", userRole);
+      }
     }
   };
   // if (signInData?.error) {
@@ -62,7 +57,7 @@ const Page = () => {
 
   return (
     // PAGE CONTAINER
-    <div className="bg-white w-screen h-screen flex justify-center items-center px-4">
+    <div className="flex items-center justify-center w-screen h-screen px-4 bg-white">
       <div className="w-full max-w-[400px] flex flex-col items-center gap-4">
         <form
           onSubmit={handleSubmit(onSubmit)}
