@@ -41,13 +41,14 @@ const Page = () => {
     if (signInData?.error) {
       console.error(signInData.error);
     } else {
+      const userId = session?.user?.id;
         const userRole = session?.user?.role;
         let callbackUrl = "/profile/";
     
         if (userRole === "patient") {
-          callbackUrl += "patient/${id}";
+          callbackUrl += `patient/${userId}`;
         } else if (userRole === "doctor") {
-          callbackUrl += "doctor/${id}";
+          callbackUrl += `doctor/${userId}`;
         } else {
           console.error("Invalid user role:", userRole);
           return;

@@ -11,12 +11,13 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
 
   const loginWithGoogle = async () => {
     const userRole = session?.user?.role;
+    const userId = session?.user?.id;
     let callbackUrl = "/profile/";
 
     if (userRole === 'patient') {
-      callbackUrl += 'patient/${id}';
+      callbackUrl += `patient/${userId}`;
     } else if (userRole === 'doctor') {
-      callbackUrl += 'doctor/${id}';
+      callbackUrl += `doctor/${userId}`;
     } else {
       console.error('Invalid user role:', userRole);
       return;
