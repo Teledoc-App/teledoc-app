@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     //   take: limit,
 
     select: {
+      id: true,
       reason: true,
       description: true,
       time: true,
