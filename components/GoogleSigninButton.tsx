@@ -17,8 +17,8 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
   } else if (userRole === "doctor") {
     callbackUrl += `doctor/${userId}`;
   } else {
-    console.error("Invalid user role:", userRole);
-    return; // Mengembalikan null jika perlu
+    console.error("Invalid user role:", userRole)
+    return; 
   }
 
   const loginWithGoogle = async () => {
