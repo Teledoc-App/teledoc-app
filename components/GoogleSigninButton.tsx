@@ -8,29 +8,29 @@ interface GoogleSignInButtonProps {
 const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
   const { data: session } = useSession();
   const router = useRouter();
-
+  const userId = session?.user?.id;
+  const userRole = session?.user?.role;
+  let callbackUrl = "/profile/";
+  
+  if (userRole === "patient") {
+    callbackUrl += `patient/${userId}`;
+  } else if (userRole === "doctor") {
+    callbackUrl += `doctor/${userId}`;
+  } else {
+    console.error("Invalid user role:", userRole);
+    return;
+  }
   const loginWithGoogle = async () => {
-    const userRole = session?.user?.role;
-    const userId = session?.user?.id;
-    let callbackUrl = "/profile/";
+    const signInData = await signIn('google',
+   { callbackUrl: callbackUrl,
+  });
 
-    if (userRole === 'patient') {
-      callbackUrl += `patient/${userId}`;
-    } else if (userRole === 'doctor') {
-      callbackUrl += `doctor/${userId}`;
-    } else {
-      console.error('Invalid user role:', userRole);
-      return;
-    }
-    const signInData = await signIn('google', {
-    callbackUrl: callbackUrl,});
-
-    if (signInData?.error) {
-      console.error(signInData.error);
-    } else {
-      router.push(callbackUrl);
-    }
-  };
+  if (signInData?.error) {
+    console.error(signInData.error);
+  } else {
+    router.push(callbackUrl);
+  }
+};
 
 
   return(
