@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { log } from "console";
+import { useSession } from "next-auth/react";
 
 interface Doctor {
   username: string;
@@ -28,6 +29,13 @@ interface Specialist {
 }
 
 export default function HomepagePatient() {
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    console.log(session);
+  }, []);
+  console.log(session);
+
   const {
     register,
     handleSubmit,
@@ -74,11 +82,13 @@ export default function HomepagePatient() {
         {/* PROFILE */}
         <nav className="flex items-center w-full gap-4 mb-8">
           {/* PICTURE */}
-          <div className="w-[70px] h-[70px] rounded-full bg-red-200"></div>
+          <div className="w-[70px] h-[70px] rounded-full bg-red-200">
+            {/* <Image  src={`${session?.user?.image}`} alt="" /> */}
+          </div>
           <div>
             <p className="text-[#858585] text-[14px]">Hi, welcome back</p>
             <span className="text-black font-semibold text-[18px]">
-              John Doe William
+              {session?.user?.email}
             </span>
           </div>
         </nav>
