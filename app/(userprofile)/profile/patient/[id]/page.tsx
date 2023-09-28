@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { useSession } from "next-auth/react";
 const patientProfile: React.FC = () => {
+	const { data: session } = useSession();
 	return (
 		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
@@ -25,7 +27,7 @@ const patientProfile: React.FC = () => {
 				<div className="w-[150px] h-[150px] m-5 rounded-full">
 					<img
 						className=" rounded-full"
-						src={"https://i.pravatar.cc/200"}
+						src={session?.user?.image || "https://i.pravatar.cc/200"}
 						alt="Profile picture"
 						width={200}
 						height={200}
@@ -33,7 +35,7 @@ const patientProfile: React.FC = () => {
 				</div>
 
 				<div>
-					<h1 className="text-[#000000] text-xl font-bold">Jhon Doe</h1>
+					<h1 className="text-[#000000] text-xl font-bold">{session?.user?.name}</h1>
 				</div>
 
 				<div className="flex  items-center pt-5 w-[400px]">
