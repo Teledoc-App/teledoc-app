@@ -39,11 +39,11 @@ export default function HomepagePatient() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
 
-  const URL = "http://localhost:3000/api/";
+  //const URL = process.env.NEXTAUTH_URL + "/api/";
 
   const getDoctors = async () => {
     try {
-      const response = await axios.get(URL + "doctor");
+      const response = await axios.get("../api/doctor");
       console.log(response.data.doctors);
       setDoctors(response.data.doctors);
       // console.log(response.data);
@@ -54,7 +54,7 @@ export default function HomepagePatient() {
 
   const getSpecialists = async () => {
     try {
-      const response = await axios.get(URL + "specialist");
+      const response = await axios.get("../api/specialist");
       console.log(response.data.specialist);
 
       setSpecialists(response.data.specialist);
@@ -69,10 +69,10 @@ export default function HomepagePatient() {
   }, []);
 
   return (
-    <div className="flex w-screen justify-center">
+    <div className="flex justify-center w-screen">
       <div className="bg-white w-screen max-w-[425px] h-fit flex flex-col justify-center items-center px-4 py-8 overflow-y-scroll">
         {/* PROFILE */}
-        <nav className="flex w-full items-center gap-4 mb-8">
+        <nav className="flex items-center w-full gap-4 mb-8">
           {/* PICTURE */}
           <div className="w-[70px] h-[70px] rounded-full bg-red-200"></div>
           <div>
@@ -94,7 +94,7 @@ export default function HomepagePatient() {
         </form>
 
         <section className="w-full mb-8">
-          <div className="w-full flex justify-between items-center mb-2">
+          <div className="flex items-center justify-between w-full mb-2">
             <h2 className="text-[24px] text-black font-semibold">
               Specialists
             </h2>
@@ -116,7 +116,7 @@ export default function HomepagePatient() {
         </section>
 
         <section className="w-full">
-          <div className="flex justify-between items-center w-full mb-2">
+          <div className="flex items-center justify-between w-full mb-2">
             <h2 className="text-[24px] text-black font-semibold">Doctors</h2>
             <a href="" className="text-[16px] text-[#858585]">
               See All
