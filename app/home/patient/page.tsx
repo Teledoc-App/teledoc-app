@@ -28,13 +28,17 @@ interface Specialist {
   updatedAt: string;
 }
 
+interface Profile {
+  name: string;
+  image: string;
+}
+
 export default function HomepagePatient() {
   const { data: session } = useSession();
 
   useEffect(() => {
-    console.log(session);
+    // console.log(session);
   }, []);
-  console.log(session);
 
   const {
     register,
@@ -46,15 +50,21 @@ export default function HomepagePatient() {
 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
+  const [userProfile, setUserProfile] = useState<Profile>();
+
+  const getUserProfile = async () => {
+    const response = await axios.get("../api/users/me");
+    console.log(response.data.data.user);
+
+    setUserProfile(response.data.data.user);
+  };
 
   //const URL = process.env.NEXTAUTH_URL + "/api/";
 
   const getDoctors = async () => {
     try {
       const response = await axios.get("../api/doctor");
-      console.log(response.data.doctors);
       setDoctors(response.data.doctors);
-      // console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -63,8 +73,6 @@ export default function HomepagePatient() {
   const getSpecialists = async () => {
     try {
       const response = await axios.get("../api/specialist");
-      console.log(response.data.specialist);
-
       setSpecialists(response.data.specialist);
     } catch (error) {
       console.log(error);
@@ -74,6 +82,7 @@ export default function HomepagePatient() {
   useEffect(() => {
     getDoctors();
     getSpecialists();
+    getUserProfile();
   }, []);
 
   return (
@@ -82,13 +91,19 @@ export default function HomepagePatient() {
         {/* PROFILE */}
         <nav className="flex items-center w-full gap-4 mb-8">
           {/* PICTURE */}
-          <div className="w-[70px] h-[70px] rounded-full bg-red-200">
-            {/* <Image  src={`${session?.user?.image}`} alt="" /> */}
+          <div className="w-[70px] h-[70px] rounded-full bg-red-200 overflow-hidden">
+            <img width={85} height={85} src={userProfile?.image} alt="" />
+            {/* <Image
+              width={70}
+              height={70}
+              src={`/${userProfile?.image}`}
+              alt=""
+            /> */}
           </div>
           <div>
             <p className="text-[#858585] text-[14px]">Hi, welcome back</p>
             <span className="text-black font-semibold text-[18px]">
-              {session?.user?.email}
+              {userProfile?.name}
             </span>
           </div>
         </nav>

@@ -7,7 +7,7 @@ import { authOptions } from "@/lib/auth";
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session) {
       return getErrorResponse(
         401,
@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
         gender: true,
         birthDate: true,
         role: true,
+        image: true,
         patientAppointments: {
           select: {
             doctor: {
@@ -34,9 +35,9 @@ export async function GET(req: NextRequest) {
                 doctor: {
                   select: {
                     username: true,
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
             reason: true,
             description: true,
@@ -44,10 +45,10 @@ export async function GET(req: NextRequest) {
             date: true,
             status: {
               select: {
-                name: true
-              }
-            }
-          }
+                name: true,
+              },
+            },
+          },
         },
         doctorAppointments: {
           select: {
@@ -56,7 +57,7 @@ export async function GET(req: NextRequest) {
                 name: true,
                 birthDate: true,
                 gender: true,
-              }
+              },
             },
             reason: true,
             description: true,
@@ -64,12 +65,12 @@ export async function GET(req: NextRequest) {
             date: true,
             status: {
               select: {
-                name: true
-              }
-            }
-          }
-        }
-      }
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return NextResponse.json({
@@ -79,16 +80,17 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     // Handle any errors here and return an appropriate response
     console.error(error);
-    return getErrorResponse(500, "An error occurred while processing your request.");
+    return getErrorResponse(
+      500,
+      "An error occurred while processing your request."
+    );
   }
 }
 
-export async function PATCH(
-  request: Request) {
-    
+export async function PATCH(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session) {
       return getErrorResponse(
         401,
@@ -134,8 +136,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: Request) {
+export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
