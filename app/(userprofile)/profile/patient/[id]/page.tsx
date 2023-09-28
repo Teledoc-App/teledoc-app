@@ -5,7 +5,8 @@ import { useSession } from "next-auth/react";
 
 
 const patientProfile: React.FC = () => {
-	//const { data: session } = useSession();
+	
+
 	return (
 		<div className="flex items-center justify-center w-screen px-4 py-4 bg-white h-fit ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
@@ -27,13 +28,13 @@ const patientProfile: React.FC = () => {
 					<h1 className="text-[#ff5757] text-2xl font-bold">Profile</h1>
 				</nav>
 				<div className="w-[150px] h-[150px] m-5 rounded-full">
-					{/* <img
+					<img
 						className="rounded-full "
-						src={session?.user?.image || "https://i.pravatar.cc/200"}
+						src={"./../../../../api/users/me" || "https://i.pravatar.cc/200"}
 						alt="Profile picture"
 						width={200}
 						height={200}
-					/> */}
+					/>
 				</div>
 
 				<div>

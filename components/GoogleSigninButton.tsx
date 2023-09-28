@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 interface GoogleSignInButtonProps {
@@ -10,17 +10,14 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
   const router = useRouter();
   const userId = session?.user?.id;
   const userRole = session?.user?.role;
-  let callbackUrl = "/profile/";
+  let callbackUrl = `/profile/patient/${userId}`;
 
-  if (userRole === "patient") {
-    callbackUrl += `patient/${userId}`;
-  } else if (userRole === "doctor") {
-    callbackUrl += `doctor/${userId}`;
-  } else {
-    console.error("Invalid user role:", userRole)
-    //return; 
+  if (userRole === "doctor") {
+    callbackUrl = `/profile/doctor/${userId}`;
+  } else if (userRole !== "patient") {
+    console.error("Invalid user role:", userRole);
+    //return;
   }
-
   const loginWithGoogle = async () => {
     const signInData = await signIn("google", {
       callbackUrl: callbackUrl,
