@@ -1,17 +1,54 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 
-const HistoryCards = ({}) => {
-  // const style = type + " thumb-container";
+// interface specialistProps {
+//   id: string;
+//   title: string;
+// }
+
+// interface doctorProps {
+//   image: string;
+//   username: string;
+//   specialist: specialistProps;
+// }
+
+// interface statusProps {
+//   name: string;
+// }
+
+// interface patientAppointment {
+//   id: string;
+//   specialist: specialistProps;
+//   doctor: doctorProps;
+//   status: statusProps;
+// }
+
+const HistoryCards = (props: { appointment: any }) => {
   return (
-    <div className="flex flex-row border border-black rounded-lg w-[377px] h-[123px]">
-      <div className="flex flex-col">
-        <div className="gambar">gambar</div>
-      </div>
-      <div className="flex flex-col px-5">
-        <div className="gambar">dr.sledge hammer</div>
-        <div className="text">dokter gigi</div>
-        <div className="text-blue-600">done</div>
+    <div className="flex justify-center items-center py-2">
+      <div className="container flex bg-[#d9d9d9]/30 h-[120px] w-[400px] px-4 rounded-lg border text-gray-400 outline-none">
+        <div className="p-2 flex items-center">
+          <img
+            className="w-20 h-20 rounded-full"
+            src={
+              "https://cdn.vectorstock.com/i/preview-1x/82/99/no-image-available-like-missing-picture-vector-43938299.jpg"
+            }
+            alt="Profile picture"
+            width={200}
+            height={200}
+          />
+          <div className="px-7">
+            <h1 className="text-[#000000] text-xl font-bold">
+              {props.appointment}
+              {/* {props.appointment.doctor.doctor.username} */}
+            </h1>
+            {/* <p className="text-[#858585] text-m">{specialist?.title}</p> */}
+            <p className="text-[#ff5757] font-bold text-m mt-5">
+              {/* {status?.name} */}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -27,14 +27,18 @@ export async function GET(req: NextRequest) {
         gender: true,
         birthDate: true,
         role: true,
+        doctor: true,
         image: true,
         patientAppointments: {
           select: {
+            id: true,
             doctor: {
               select: {
+                image: true,
                 doctor: {
                   select: {
                     username: true,
+                    specialist: true,
                   },
                 },
               },

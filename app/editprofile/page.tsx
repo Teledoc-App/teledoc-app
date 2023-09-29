@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import IconRolling from "../../../assets/rolling.svg";
+import IconRolling from "../../assets/rolling.svg";
 
 import Select from "react-select";
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -12,23 +13,33 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import ImageKit from "imagekit";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
+import axios from "axios";
 import Image from "next/image";
+
+interface Doctor {
+  strNumber: string;
+  username: string;
+}
 
 interface Register {
   name: string;
   email: string;
-  phone: number;
+  phone: string;
   password: string;
-  gender: { label: string; value: string };
-  birthDate: Date | null;
-  role: { label: string; value: string };
+  // gender: Gender;
+  // birthDate: Date | null;
+  // role: string;
   image: string;
+  // username: string;
+  // strnumber: number;
+  // doctor: Doctor;
 }
 
-//type Date = DatePiece | [DatePiece, DatePiece];
+interface Value {}
+
 const publicKeyEnv = process.env.NEXT_PUBLIC_KEY as string;
 const privateKeyEnv = process.env.NEXT_PUBLIC_PRIVATE_KEY as string;
 const urlEndpointEnv = process.env.NEXT_PUBLIC_URL_ENDPOINT as string;
@@ -49,32 +60,36 @@ interface Role {
   label: string;
 }
 
+interface Profile {
+  name: string;
+  image: string;
+  email: string;
+  phone: string;
+  doctor: Doctor;
+  role: Role;
+
+  gender: Gender;
+
+  password: string;
+}
+
 const Page = () => {
   const router = useRouter();
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-
   const [birthDate, setBirthDate] = React.useState<Date | null>(null);
-
-  const [imageInput, setImageInput] = useState<FileList | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
-
   const [selectedGender, setSelectedGender] = useState<Gender>({
     value: "M",
     label: "Male",
   });
+  const [userProfile, setUserProfile] = useState<Profile>();
+  const [imageInput, setImageInput] = useState<FileList | null>(null);
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(userProfile?.image);
 
   const [selectedRole, setSelectedRole] = useState<Role>({
     value: "patient",
     label: "Patient",
   });
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm<Register>();
 
   const [imageUploadKey, setImageUploadKey] = useState(Date.now());
 
@@ -100,47 +115,80 @@ const Page = () => {
     updateImage();
   }, [imageInput]);
 
-  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setImageInput(e.target.files);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Register>({
+    values: {
+      name: !userProfile?.name ? "" : userProfile?.name,
+      email: !userProfile?.email ? "" : userProfile?.email,
+      phone: !userProfile?.phone ? "" : String(userProfile?.phone),
+      password: !userProfile?.password ? "" : userProfile?.password,
+      image: !userProfile?.image ? "" : userProfile?.image,
+      // gender: !userProfile?.gender
+      //   ? { value: "", label: "" }
+      //   : userProfile?.gender,
+      // role: !userProfile?.image ? "" : userProfile?.image,
+    },
+    mode: "onTouched",
+  });
+
+  const getUserProfile = async () => {
+    const response = await axios.get("../api/users/me");
+    console.log(response.data.data.user);
+
+    setUserProfile(response.data.data.user);
+    setSelectedGender({
+      value: response.data.data.user.gender,
+      label: response.data.data.user.gender == "M" ? "Male" : "Female",
+    });
   };
 
   const onSubmit: SubmitHandler<Register> = async (data) => {
-    setIsLoading(true);
+    console.log(data);
+
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
+      const response = await fetch("/api/users/me", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...data,
-          image: imageUrl,
-          birthDate: birthDate,
-          role: selectedRole?.value,
-          gender: selectedGender?.value,
+          email: data.email || userProfile?.email,
+          name: data.name || userProfile?.name,
+          phone: data.phone || userProfile?.phone,
+          password: data.password,
+          image: imageUrl ? imageUrl : userProfile?.image,
         }),
       });
+
       if (response.ok) {
-        console.log("Registration successful");
-        router.replace("/login");
+        alert("Profile Successfully Updated");
       } else {
         console.error("Registration failed");
-        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
-      setIsLoading(false);
     }
   };
 
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setImageInput(e.target.files);
+  };
+
+  useEffect(() => {
+    getUserProfile();
+  }, []);
+
   return (
     // PAGE
-    <div className="flex items-center justify-center w-screen px-4 py-4 overflow-y-scroll bg-white h-fit">
+    <div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 overflow-y-scroll">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 overflow-y-scroll"
       >
-        <nav className="relative flex items-center justify-center w-full">
+        <nav className="flex justify-center items-center w-full relative">
           <a href="./login" className="absolute left-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -155,17 +203,14 @@ const Page = () => {
               />
             </svg>
           </a>
-          <h1 className="text-[#ff5757] text-2xl font-bold">
-            Create New Account
-          </h1>
+          <h1 className="text-[#ff5757] text-2xl font-bold">Personal Detail</h1>
         </nav>
-
         {/*IMAGE*/}
         <div className="flex flex-col items-center gap-4">
           <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
-            {imageUrl ? (
-              <img width={150} height={150} src={imageUrl} alt="" />
-            ) : (
+            {!imageUrl ? (
+              <img width={150} height={150} src={userProfile?.image} alt="" />
+            ) : !imageUrl && !userProfile?.image ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -178,6 +223,8 @@ const Page = () => {
                   clipRule="evenodd"
                 />
               </svg>
+            ) : (
+              <img width={150} height={150} src={imageUrl} alt="" />
             )}
             {/* LOADING */}
             {isUploading && (
@@ -214,7 +261,8 @@ const Page = () => {
             />
           </button>
         </div>
-        {/* LAST NAME */}
+        {/* NAME */}
+
         <div className="w-full">
           <label className="text-black" htmlFor="name">
             Name
@@ -222,12 +270,12 @@ const Page = () => {
           <input
             id="name"
             type="text"
-            placeholder="Enter your last name"
-            defaultValue=""
+            placeholder="Enter your name"
+            defaultValue={userProfile?.name}
             {...register("name", {
               required: {
                 value: true,
-                message: "Last name is a required field",
+                message: "Name is a required field",
               },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
@@ -239,6 +287,56 @@ const Page = () => {
           <p className="text-amber-500">{errors?.name?.message}</p>
         </div>
 
+        {/* USERNAME */}
+        {/* <div className="w-full">
+          <label className="text-black" htmlFor="username">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Enter your username"
+            defaultValue={userProfile?.doctor.username}
+            {...register("username", {
+              required: {
+                value: true,
+                message: "Username is a required field",
+              },
+            })}
+            className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
+              errors?.username
+                ? "border-amber-500 focus:border-amber-500"
+                : "focus:border-[#ff5757] border-[#d9d9d9]"
+            } `}
+          />
+          <p className="text-amber-500">{errors?.username?.message}</p>
+        </div> */}
+
+        {/* STR NUMBER */}
+        {/* <div className="w-full">
+          <label className="text-black" htmlFor="strnumber">
+            Str Number
+          </label>
+          <input
+            id="strnumber"
+            type="text"
+            placeholder="Enter Str number"
+            defaultValue={userProfile?.doctor?.strNumber}
+            {...register("strnumber", {
+              required: {
+                value: true,
+                message: "Str number is a required field",
+              },
+            })}
+            className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
+              errors?.strnumber
+                ? "border-amber-500 focus:border-amber-500"
+                : "focus:border-[#ff5757] border-[#d9d9d9]"
+            } `}
+          />
+          <p className="text-amber-500">{errors?.strnumber?.message}</p>
+        </div> */}
+
         {/* EMAIL */}
         <div className="w-full">
           <label className="text-black" htmlFor="email">
@@ -247,7 +345,7 @@ const Page = () => {
           <input
             id="email"
             {...register("email")}
-            defaultValue=""
+            defaultValue={userProfile?.email}
             type="email"
             placeholder="Enter your email"
             {...register("email", {
@@ -277,9 +375,9 @@ const Page = () => {
           </label>
           <input
             id="phone"
-            type="number"
+            type="text"
             placeholder="(XXX)-XXXX-XXXX"
-            defaultValue=""
+            defaultValue={userProfile?.phone}
             {...register("phone", {
               required: {
                 value: true,
@@ -306,20 +404,10 @@ const Page = () => {
             placeholder="Enter your password"
             defaultValue=""
             {...register("password", {
-              minLength: {
-                value: 8,
-                message: "Password needs to be at least 8 characters",
-              },
-              required: {
-                value: true,
-                message: "Password is a required field",
-              },
-              pattern: {
-                value:
-                  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!])[A-Za-z\d@#$%^&+=!]{8,}$/,
-                message:
-                  "Password needs uppercase, lowercase, number, special character",
-              },
+              // required: {
+              //   value: true,
+              //   message: "Password is a required field",
+              // },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black w-full outline-none ${
               errors?.password
@@ -330,8 +418,8 @@ const Page = () => {
           <p className="text-amber-500">{errors?.password?.message}</p>
         </div>
         {/*BIRTHDATE*/}
-        <p className="w-full -mb-4 text-left text-black">Birth Date</p>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {/* <p className="text-black text-left w-full -mb-4">Birth Date</p> */}
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             value={birthDate}
             onChange={(date) => setBirthDate(date)}
@@ -339,40 +427,29 @@ const Page = () => {
             sx={{
               width: "100%",
               backgroundColor: "rgba(217, 217, 217, 0.3)",
-              // borderColor: "#ff5757",
-              // outline: "#ff5757",
               borderRadius: "8px",
             }}
           />
-        </LocalizationProvider>
+        </LocalizationProvider> */}
+        {/* <h1 className="text-black">{birthDate?.$d.toString()}</h1> */}
 
         {/*GENDER*/}
-        <GenderSelect
+        {/* <GenderSelect
           selectedGender={selectedGender}
           setSelectedGender={setSelectedGender}
         />
         <RoleSelect
           selectedRole={selectedRole}
           setSelectedRole={setSelectedRole}
-        />
+        /> */}
+
         {/* SUBMIT */}
         <button
           type="submit"
-          className="bg-[#ff5757] disabled:bg-[#d9d9d9] rounded-lg w-full h-[60px] font-semibold text-white mt-8 flex justify-center items-center"
-          disabled={isLoading ? true : false}
+          className="bg-[#ff5757] rounded-lg w-full h-[60px] font-semibold text-white mt-8"
         >
-          {isLoading ? (
-            <Image width={40} height={40} src={IconRolling} alt="" />
-          ) : (
-            "Sign up"
-          )}
+          Update Profile
         </button>
-        <span className="text-black">
-          Already have an account?{" "}
-          <a href="./login" className="text-[#ff5757] hover:underline">
-            Sign In
-          </a>
-        </span>
       </form>
     </div>
   );
