@@ -3,7 +3,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -44,6 +44,7 @@ export default function HomepagePatient() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm();
 
@@ -52,15 +53,12 @@ export default function HomepagePatient() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [userProfile, setUserProfile] = useState<Profile>();
+  const [searchValue, setSearchValue] = useState("");
 
   const getUserProfile = async () => {
     const response = await axios.get("../api/users/me");
-    console.log(response.data.data.user);
-
     setUserProfile(response.data.data.user);
   };
-
-  //const URL = process.env.NEXTAUTH_URL + "/api/";
 
   const getDoctors = async () => {
     try {
@@ -85,6 +83,10 @@ export default function HomepagePatient() {
     getSpecialists();
     getUserProfile();
   }, []);
+
+  const filteredDoctors = doctors.filter((doctor) =>
+    doctor.username.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   return (
     <div className="flex justify-center w-screen">
@@ -111,7 +113,8 @@ export default function HomepagePatient() {
           <input
             type="search"
             placeholder="Search a doctor"
-            {...register}
+            // {...register("search")}
+            onChange={(e) => setSearchValue(e.target.value)}
             className="bg-[#d9d9d9]/30 border border-[#d9d9d9] w-full h-[60px] rounded-lg px-4 outline-none hover:border-[#ff5757]"
           />
         </form>
@@ -147,7 +150,7 @@ export default function HomepagePatient() {
           </div>
           {/* DOCTOR LIST */}
           <div>
-            {doctors?.map((doctor, index) => (
+            {filteredDoctors?.map((doctor, index) => (
               <a
                 href={`../../doctors/appointment/${doctor.userId}`}
                 key={index}
