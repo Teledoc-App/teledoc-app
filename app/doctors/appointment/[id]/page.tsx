@@ -3,7 +3,9 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
+import { parseISO } from "date-fns";
+import { useRouter } from "next/navigation";
 
 interface DoctorDetail {
 	username: string;
@@ -15,18 +17,20 @@ interface Profile {
 }
 
 export default function appointment({ params }: { params: { id: string } }) {
+	const router = useRouter();
 	const [doctorDetail, setdoctorDetail] = useState<DoctorDetail>();
 	const [reason, setReason] = useState("");
 	const [description, setDescription] = useState("");
-	const [date, setDate] = useState("");
 	const [time, setTime] = useState("");
 	const [username, setUsername] = useState("");
 	const [name, setName] = useState("");
 	const [gender, setGender] = useState("");
 	const [patientId, setPatientId] = useState("");
-	const [birthdate, setBirthdate] = React.useState<Date | null>(null);
+	const [doctorId, setDoctorId] = useState("");
+	const [date, setDate] = React.useState<Date | null>(null);
 	const [userProfile, setUserProfile] = useState<Profile>();
-	const [status, setStatus] = useState("pending");
+	const [statusId, setStatusId] = useState("23ba40d0-6c82-4d45-8b5c-21f8d70b959b");
+
 	const getUserProfile = async () => {
 		const response = await axios.get("../../api/users/me");
 		console.log(response.data.data.user);
@@ -38,9 +42,10 @@ export default function appointment({ params }: { params: { id: string } }) {
 
 	const getDoctorProfile = async () => {
 		const response = await axios.get(`../../api/doctor/${params.id}`);
-		console.log(response.data.data.doctor.doctor);
+		console.log(response);
 		setdoctorDetail(response.data.data.doctor.doctor);
 		setUsername(response.data.data.doctor.doctor.username as string);
+		setDoctorId(response.data.data.doctor.doctor.id as string);
 	};
 
 	useEffect(() => {
@@ -55,33 +60,39 @@ export default function appointment({ params }: { params: { id: string } }) {
 		arrayHours.push(`${nIndex}:00`);
 	}
 
-	const handleSubmit = async (e: any) => {
+	const handleSubmit = async (e: SyntheticEvent) => {
 		e.preventDefault();
+		router.push("../../success");
 
 		const data = {
 			reason,
 			description,
 			date,
 			time,
-			// patientId,
-			// doctorId: params.id,
-			doctor: { doctor: doctorDetail?.username },
-			patient: { name },
-			status,
+			patientId,
+			doctorId: params.id,
+			statusId,
 		};
 		console.log(data);
 
-		try {
-			const response = await axios.post("../../api/appointment", { data });
+		var axios = require("axios");
 
-			if (response.status === 200) {
-				console.log("Appointment booked successfully!");
-			} else {
-				console.error("Failed to book appointment");
-			}
-		} catch (error) {
-			console.error("An error occurred:", error);
-		}
+		var config = {
+			method: "post",
+			url: "http://localhost:3000/api/appointment",
+			headers: {
+				"Cache-Control": "no-cache",
+			},
+			data: data,
+		};
+
+		axios(config)
+			.then(function (response: { data: any }) {
+				console.log(JSON.stringify(response.data));
+			})
+			.catch(function (error: any) {
+				console.log(error);
+			});
 	};
 
 	const handleDateChange = (selectedDate: any) => {
