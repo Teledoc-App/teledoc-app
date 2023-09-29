@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import DoctorCard from "@/components/doctorCard";
+import axios from "axios";
 
 type specialistProps = {
 	id: string;
@@ -33,16 +34,27 @@ const Doctors: React.FC = () => {
 		return sLowDocName.includes(sLowKeyword) && doctor.specialist.title.includes(specialist);
 	});
 
+	const getDoctors = async () => {
+		const response = await axios.get("../../api/doctor");
+		console.log(response.data.doctors);
+
+		setDoctors(response.data.doctors);
+	};
+
 	useEffect(() => {
-		// Fetch data from the API
-		fetch("http://localhost:3000/api/doctor")
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data);
-				setDoctors(data.doctors);
-			})
-			.catch((error) => console.error("Error fetching data:", error));
+		getDoctors();
 	}, []);
+
+	// useEffect(() => {
+	// 	// Fetch data from the API
+	// 	fetch("http://localhost:3000/api/doctor")
+	// 		.then((response) => response.json())
+	// 		.then((data) => {
+	// 			console.log(data);
+	// 			setDoctors(data.doctors);
+	// 		})
+	// 		.catch((error) => console.error("Error fetching data:", error));
+	// }, []);
 	return (
 		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
