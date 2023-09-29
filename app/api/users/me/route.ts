@@ -30,11 +30,14 @@ export async function GET(req: NextRequest) {
         image: true,
         patientAppointments: {
           select: {
+            id: true,
             doctor: {
               select: {
+                image: true,
                 doctor: {
                   select: {
                     username: true,
+                    specialist: true,
                   },
                 },
               },
