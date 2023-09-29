@@ -24,7 +24,7 @@ import React from "react";
 //   status: statusProps;
 // }
 
-const HistoryCards = ({}) => {
+const HistoryCards = (props: { appointment: any }) => {
   return (
     <div className="flex justify-center items-center py-2">
       <div className="container flex bg-[#d9d9d9]/30 h-[120px] w-[400px] px-4 rounded-lg border text-gray-400 outline-none">
@@ -40,7 +40,8 @@ const HistoryCards = ({}) => {
           />
           <div className="px-7">
             <h1 className="text-[#000000] text-xl font-bold">
-              {/* {doctor.username} */}
+              {props.appointment}
+              {/* {props.appointment.doctor.doctor.username} */}
             </h1>
             {/* <p className="text-[#858585] text-m">{specialist?.title}</p> */}
             <p className="text-[#ff5757] font-bold text-m mt-5">

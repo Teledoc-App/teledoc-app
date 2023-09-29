@@ -1,11 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import IconRolling from "../../assets/rolling.svg";
+
 import Select from "react-select";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ImageKit from "imagekit";
 import { format } from "date-fns";
@@ -14,6 +17,12 @@ import { useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
 import axios from "axios";
+import Image from "next/image";
+
+interface Doctor {
+  strNumber: string;
+  username: string;
+}
 
 interface Register {
   name: string;
@@ -24,6 +33,9 @@ interface Register {
   birthDate: Date | null;
   role: { label: string; value: string };
   image: string;
+  username: string;
+  strnumber: number;
+  doctor: Doctor;
 }
 
 const publicKeyEnv = process.env.NEXT_PUBLIC_KEY as string;
@@ -51,6 +63,7 @@ interface Profile {
   image: string;
   email: string;
   phone: number;
+  doctor: Doctor;
 }
 
 const Page = () => {
@@ -61,11 +74,40 @@ const Page = () => {
     label: "Male",
   });
   const [userProfile, setUserProfile] = useState<Profile>();
+  const [imageInput, setImageInput] = useState<FileList | null>(null);
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(userProfile?.image);
 
   const [selectedRole, setSelectedRole] = useState<Role>({
     value: "patient",
     label: "Patient",
   });
+
+  const [imageUploadKey, setImageUploadKey] = useState(Date.now());
+
+  const updateImage = async () => {
+    setIsUploading(true);
+    try {
+      const file = imageInput ? imageInput[0] : undefined;
+      console.log(file);
+
+      const imageKitResponse = await imageKit.upload({
+        file: file as any,
+        fileName: `${Date.now()}-${file}`,
+      });
+
+      setImageUrl(`${imageKitResponse.url}?${imageUploadKey}`);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsUploading(false);
+  };
+
+  useEffect(() => {
+    updateImage();
+  }, [imageInput]);
+
   const {
     register,
     handleSubmit,
@@ -88,26 +130,28 @@ const Page = () => {
 
     try {
       // Upload gambar ke ImageKit
-      const file = data.image[0]; // Ambil gambar dari form input
-      const imageKitResponse = await imageKit.upload({
-        file: file as any,
-        fileName: `${Date.now()}-${file}`,
-      });
-      const imageUrl = imageKitResponse.url;
+      // const file = data.image[0]; // Ambil gambar dari form input
+      // const imageKitResponse = await imageKit.upload({
+      //   file: file as any,
+      //   fileName: `${Date.now()}-${file}`,
+      // });
+      // const imageUrl = imageKitResponse.url;
 
-      const response = await fetch("/api/register", {
-        method: "POST",
+      const response = await fetch("/api/users/me", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...data,
-          image: imageUrl,
-          birthDate: birthDate,
-          role: selectedRole?.value,
-          gender: selectedGender?.value,
+          name: data.name,
+          username: data.username,
+          strNumber: data.strnumber,
+          phone: data.phone,
+          password: data.password,
+          image: imageUrl ? imageUrl : userProfile?.image,
         }),
       });
+
       if (response.ok) {
         router.push("/login");
       } else {
@@ -116,6 +160,10 @@ const Page = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setImageInput(e.target.files);
   };
 
   useEffect(() => {
@@ -148,15 +196,15 @@ const Page = () => {
         </nav>
         {/*IMAGE*/}
         <div className="flex flex-col items-center gap-4">
-          <div className="w-[150px] h-[150px] rounded-full overflow-hidden">
-            {userProfile?.image ? (
+          <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
+            {!imageUrl ? (
               <img width={150} height={150} src={userProfile?.image} alt="" />
-            ) : (
+            ) : !imageUrl && !userProfile?.image ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-full h-full text-[#d9d9d9] animate-pulse"
+                className="w-full h-full text-[#d9d9d9]"
               >
                 <path
                   fillRule="evenodd"
@@ -164,20 +212,41 @@ const Page = () => {
                   clipRule="evenodd"
                 />
               </svg>
+            ) : (
+              <img width={150} height={150} src={imageUrl} alt="" />
+            )}
+            {/* LOADING */}
+            {isUploading && (
+              <div className="w-full h-full left-0 top-0 bg-white/80 z-50 absolute flex justify-center items-center">
+                <Image width={40} height={40} src={IconRolling} alt="" />
+              </div>
             )}
           </div>
-          <button className="relative border border-[#ff5757] rounded-full overflow-hidden hover:cursor-pointer px-3 py-1">
-            <p className="text-[#ff5757] hover:cursor-pointer">Choose file</p>
+          <button
+            className={`relative border ${
+              errors.image ? "border-amber-500" : "border-[#ff5757]"
+            }  rounded-full overflow-hidden hover:cursor-pointer px-3 py-1 ${
+              isUploading && "animate-pulse"
+            }`}
+          >
+            <p
+              className={`hover:cursor-pointer ${
+                errors.image ? "text-amber-500" : "text-[#ff5757]"
+              }`}
+            >
+              {isUploading
+                ? "Uploading..."
+                : !isUploading && !errors.image && imageInput == null
+                ? "Upload an image"
+                : !isUploading && !errors.image && imageInput !== null
+                ? "Change image"
+                : errors.image?.message}
+            </p>
             <input
-              className="w-full h-full bg-blue-300 z-20 absolute top-0 left-0 opacity-0 hover:cursor-pointer"
               type="file"
+              className="absolute top-0 left-0 z-20 w-full h-full bg-blue-300 opacity-0 hover:cursor-pointer"
               accept="image/*"
-              {...register("image", {
-                required: {
-                  value: true,
-                  message: "Image is a required field",
-                },
-              })}
+              onChange={handleFileInputChange}
             />
           </button>
         </div>
@@ -189,12 +258,12 @@ const Page = () => {
           <input
             id="name"
             type="text"
-            placeholder="Enter your last name"
+            placeholder="Enter your name"
             defaultValue={userProfile?.name}
             {...register("name", {
               required: {
                 value: true,
-                message: "Last name is a required field",
+                message: "Name is a required field",
               },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
@@ -204,6 +273,56 @@ const Page = () => {
             } `}
           />
           <p className="text-amber-500">{errors?.name?.message}</p>
+        </div>
+
+        {/* USERNAME */}
+        <div className="w-full">
+          <label className="text-black" htmlFor="username">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Enter your username"
+            defaultValue={userProfile?.doctor.username}
+            {...register("username", {
+              required: {
+                value: true,
+                message: "Username is a required field",
+              },
+            })}
+            className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
+              errors?.username
+                ? "border-amber-500 focus:border-amber-500"
+                : "focus:border-[#ff5757] border-[#d9d9d9]"
+            } `}
+          />
+          <p className="text-amber-500">{errors?.username?.message}</p>
+        </div>
+
+        {/* STR NUMBER */}
+        <div className="w-full">
+          <label className="text-black" htmlFor="strnumber">
+            Str Number
+          </label>
+          <input
+            id="strnumber"
+            type="text"
+            placeholder="Enter Str number"
+            defaultValue={userProfile?.doctor?.strNumber}
+            {...register("strnumber", {
+              required: {
+                value: true,
+                message: "Str number is a required field",
+              },
+            })}
+            className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black  w-full outline-none ${
+              errors?.strnumber
+                ? "border-amber-500 focus:border-amber-500"
+                : "focus:border-[#ff5757] border-[#d9d9d9]"
+            } `}
+          />
+          <p className="text-amber-500">{errors?.strnumber?.message}</p>
         </div>
 
         {/* EMAIL */}
@@ -287,8 +406,8 @@ const Page = () => {
           <p className="text-amber-500">{errors?.password?.message}</p>
         </div>
         {/*BIRTHDATE*/}
-        <p className="text-black text-left w-full -mb-4">Birth Date</p>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {/* <p className="text-black text-left w-full -mb-4">Birth Date</p> */}
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             value={birthDate}
             onChange={(date) => setBirthDate(date)}
@@ -299,7 +418,7 @@ const Page = () => {
               borderRadius: "8px",
             }}
           />
-        </LocalizationProvider>
+        </LocalizationProvider> */}
         {/* <h1 className="text-black">{birthDate?.$d.toString()}</h1> */}
 
         {/*GENDER*/}
