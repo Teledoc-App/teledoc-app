@@ -27,16 +27,18 @@ interface Doctor {
 interface Register {
   name: string;
   email: string;
-  phone: number;
+  phone: string;
   password: string;
-  gender: { label: string; value: string };
-  birthDate: Date | null;
-  role: { label: string; value: string };
+  // gender: Gender;
+  // birthDate: Date | null;
+  // role: string;
   image: string;
-  username: string;
-  strnumber: number;
-  doctor: Doctor;
+  // username: string;
+  // strnumber: number;
+  // doctor: Doctor;
 }
+
+interface Value {}
 
 const publicKeyEnv = process.env.NEXT_PUBLIC_KEY as string;
 const privateKeyEnv = process.env.NEXT_PUBLIC_PRIVATE_KEY as string;
@@ -62,8 +64,13 @@ interface Profile {
   name: string;
   image: string;
   email: string;
-  phone: number;
+  phone: string;
   doctor: Doctor;
+  role: Role;
+
+  gender: Gender;
+
+  password: string;
 }
 
 const Page = () => {
@@ -112,7 +119,20 @@ const Page = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Register>();
+  } = useForm<Register>({
+    values: {
+      name: !userProfile?.name ? "" : userProfile?.name,
+      email: !userProfile?.email ? "" : userProfile?.email,
+      phone: !userProfile?.phone ? "" : String(userProfile?.phone),
+      password: !userProfile?.password ? "" : userProfile?.password,
+      image: !userProfile?.image ? "" : userProfile?.image,
+      // gender: !userProfile?.gender
+      //   ? { value: "", label: "" }
+      //   : userProfile?.gender,
+      // role: !userProfile?.image ? "" : userProfile?.image,
+    },
+    mode: "onTouched",
+  });
 
   const getUserProfile = async () => {
     const response = await axios.get("../api/users/me");
@@ -129,31 +149,22 @@ const Page = () => {
     console.log(data);
 
     try {
-      // Upload gambar ke ImageKit
-      // const file = data.image[0]; // Ambil gambar dari form input
-      // const imageKitResponse = await imageKit.upload({
-      //   file: file as any,
-      //   fileName: `${Date.now()}-${file}`,
-      // });
-      // const imageUrl = imageKitResponse.url;
-
       const response = await fetch("/api/users/me", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: data.name,
-          username: data.username,
-          strNumber: data.strnumber,
-          phone: data.phone,
+          email: data.email || userProfile?.email,
+          name: data.name || userProfile?.name,
+          phone: data.phone || userProfile?.phone,
           password: data.password,
           image: imageUrl ? imageUrl : userProfile?.image,
         }),
       });
 
       if (response.ok) {
-        router.push("/login");
+        alert("Profile Successfully Updated");
       } else {
         console.error("Registration failed");
       }
@@ -251,6 +262,7 @@ const Page = () => {
           </button>
         </div>
         {/* NAME */}
+
         <div className="w-full">
           <label className="text-black" htmlFor="name">
             Name
@@ -276,7 +288,7 @@ const Page = () => {
         </div>
 
         {/* USERNAME */}
-        <div className="w-full">
+        {/* <div className="w-full">
           <label className="text-black" htmlFor="username">
             Username
           </label>
@@ -298,10 +310,10 @@ const Page = () => {
             } `}
           />
           <p className="text-amber-500">{errors?.username?.message}</p>
-        </div>
+        </div> */}
 
         {/* STR NUMBER */}
-        <div className="w-full">
+        {/* <div className="w-full">
           <label className="text-black" htmlFor="strnumber">
             Str Number
           </label>
@@ -323,7 +335,7 @@ const Page = () => {
             } `}
           />
           <p className="text-amber-500">{errors?.strnumber?.message}</p>
-        </div>
+        </div> */}
 
         {/* EMAIL */}
         <div className="w-full">
@@ -363,7 +375,7 @@ const Page = () => {
           </label>
           <input
             id="phone"
-            type="number"
+            type="text"
             placeholder="(XXX)-XXXX-XXXX"
             defaultValue={userProfile?.phone}
             {...register("phone", {
@@ -392,10 +404,10 @@ const Page = () => {
             placeholder="Enter your password"
             defaultValue=""
             {...register("password", {
-              required: {
-                value: true,
-                message: "Password is a required field",
-              },
+              // required: {
+              //   value: true,
+              //   message: "Password is a required field",
+              // },
             })}
             className={`bg-[#d9d9d9]/30 h-[60px] px-4 rounded-lg border  text-black w-full outline-none ${
               errors?.password
@@ -430,6 +442,7 @@ const Page = () => {
           selectedRole={selectedRole}
           setSelectedRole={setSelectedRole}
         /> */}
+
         {/* SUBMIT */}
         <button
           type="submit"
