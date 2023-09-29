@@ -34,6 +34,7 @@ export async function GET(
       },
       status: {
         select: {
+          id: true,
           name: true,
         },
       },
@@ -72,6 +73,7 @@ export async function PATCH(
       where: { id },
       data: json,
       select: {
+        id: true,
         reason: true,
         description: true,
         time: true,
@@ -94,6 +96,7 @@ export async function PATCH(
         },
         status: {
           select: {
+            id: true,
             name: true,
           },
         },

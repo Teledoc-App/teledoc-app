@@ -55,6 +55,7 @@ export async function GET(req: NextRequest) {
             patient: {
               select: {
                 name: true,
+                image: true,
                 birthDate: true,
                 gender: true,
               },

@@ -13,6 +13,7 @@
     "doctor api",
     "merge main",
     "pnpm-lock.yaml",
-    "api appointment "
+    "api appointment ",
+    "login"
   ]
 }
