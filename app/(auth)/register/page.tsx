@@ -59,9 +59,14 @@ interface Role {
 
 const Page = () => {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
   const [birthDate, setBirthDate] = React.useState<Date | null>(null);
-  const [selectedImage, setSelectedImage] = useState("");
+
+  const [uploadedImage, setUploadedImage] = useState("");
+
   const [selectedGender, setSelectedGender] = useState<Gender>({
     value: "M",
     label: "Male",
@@ -74,20 +79,44 @@ const Page = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm<Register>();
-  const watchImage = watch("image", "");
 
-  useEffect(() => {
-    console.log(watchImage);
-  }, [watchImage]);
+  const [imageUploadKey, setImageUploadKey] = useState(Date.now());
+
+  const uploadImage = async () => {
+    setIsUploading(true);
+    try {
+      const file = await getValues("image")[0];
+
+      console.log(file);
+
+      const imageKitResponse = await imageKit.upload({
+        file: file as any,
+        fileName: `${Date.now()}-${file}`,
+      });
+      const imageUrl = `${imageKitResponse.url}?${imageUploadKey}`;
+      // const imageUrl = imageKitResponse.url;
+
+      console.log(imageUrl);
+      setUploadedImage(imageUrl);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsUploading(false);
+  };
+
+  const handleFileInputChange = () => {
+    uploadImage();
+  };
 
   const onSubmit: SubmitHandler<Register> = async (data) => {
     setIsLoading(true);
     try {
       // Upload gambar ke ImageKit
       const file = data.image[0]; // Ambil gambar dari form input
+
       const imageKitResponse = await imageKit.upload({
         file: file as any,
         fileName: `${Date.now()}-${file}`,
@@ -147,26 +176,50 @@ const Page = () => {
           </h1>
         </nav>
 
-        {/* <h1 className="text-black">{watchImage}</h1> */}
-
         {/*IMAGE*/}
         <div className="flex flex-col items-center gap-4">
-          <div className="w-[150px] h-[150px] rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-full h-full text-[#d9d9d9]"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+          <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
+            {uploadedImage ? (
+              <img width={150} height={150} src={uploadedImage} alt="" />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-full h-full text-[#d9d9d9]"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+            {/* LOADING */}
+            {isUploading && (
+              <div className="w-full h-full left-0 top-0 bg-white/80 z-50 absolute flex justify-center items-center">
+                <Image width={40} height={40} src={IconRolling} alt="" />
+              </div>
+            )}
           </div>
-          <button className="relative border border-[#ff5757] rounded-full overflow-hidden hover:cursor-pointer px-3 py-1">
-            <p className="text-[#ff5757] hover:cursor-pointer">Choose file</p>
+          <button
+            className={`relative border ${
+              errors.image ? "border-amber-500" : "border-[#ff5757]"
+            }  rounded-full overflow-hidden hover:cursor-pointer px-3 py-1 ${
+              isUploading && "animate-pulse"
+            }`}
+          >
+            <p
+              className={`hover:cursor-pointer ${
+                errors.image ? "text-amber-500" : "text-[#ff5757]"
+              }`}
+            >
+              {isUploading
+                ? "Uploading..."
+                : (!isUploading && !errors.image) || uploadedImage
+                ? "Upload an image"
+                : errors.image?.message}
+            </p>
             <input
               className="absolute top-0 left-0 z-20 w-full h-full bg-blue-300 opacity-0 hover:cursor-pointer"
               type="file"
@@ -177,6 +230,8 @@ const Page = () => {
                   message: "Image is a required field",
                 },
               })}
+              onChange={handleFileInputChange}
+              key={imageUploadKey}
             />
           </button>
         </div>
@@ -299,9 +354,8 @@ const Page = () => {
         <p className="w-full -mb-4 text-left text-black">Birth Date</p>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-          label="Birth Date"
-          value={birthDate}
-          onChange={(date) => setBirthDate(date)}
+            value={birthDate}
+            onChange={(date) => setBirthDate(date)}
             format="YYYY - MM - DD"
             sx={{
               width: "100%",
@@ -312,7 +366,7 @@ const Page = () => {
             }}
           />
         </LocalizationProvider>
-        
+
         {/*GENDER*/}
         <GenderSelect
           selectedGender={selectedGender}
