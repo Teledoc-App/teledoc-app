@@ -119,7 +119,7 @@ export default function HomepagePatient() {
           />
         </form>
 
-        <section className="w-full mb-8">
+        {/* <section className="w-full mb-8">
           <div className="flex items-center justify-between w-full mb-2">
             <h2 className="text-[24px] text-black font-semibold">
               Specialists
@@ -127,9 +127,9 @@ export default function HomepagePatient() {
             <a href="" className="text-[16px] text-[#858585]">
               See All
             </a>
-          </div>
-          {/* SPECIALISTS */}
-          <div className="flex gap-4 overflow-x-scroll">
+          </div> */}
+        {/* SPECIALISTS */}
+        {/* <div className="flex gap-4 overflow-x-scroll">
             {specialists.map((specialist, index) => (
               <button
                 key={index}
@@ -139,7 +139,7 @@ export default function HomepagePatient() {
               </button>
             ))}
           </div>
-        </section>
+        </section> */}
 
         <section className="w-full">
           <div className="flex items-center justify-between w-full mb-2">
