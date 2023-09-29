@@ -5,7 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import Select from "react-select";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ImageKit from "imagekit";
 import { format } from "date-fns";
@@ -13,6 +13,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
+import axios from "axios";
 
 interface Register {
   name: string;
@@ -45,13 +46,21 @@ interface Role {
   label: string;
 }
 
+interface Profile {
+  name: string;
+  image: string;
+  email: string;
+  phone: number;
+}
+
 const Page = () => {
   const router = useRouter();
-  const [date, setDate] = React.useState<Date>();
+  const [birthDate, setBirthDate] = React.useState<Date | null>(null);
   const [selectedGender, setSelectedGender] = useState<Gender>({
     value: "M",
     label: "Male",
   });
+  const [userProfile, setUserProfile] = useState<Profile>();
 
   const [selectedRole, setSelectedRole] = useState<Role>({
     value: "patient",
@@ -62,6 +71,17 @@ const Page = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<Register>();
+
+  const getUserProfile = async () => {
+    const response = await axios.get("../api/users/me");
+    console.log(response.data.data.user);
+
+    setUserProfile(response.data.data.user);
+    setSelectedGender({
+      value: response.data.data.user.gender,
+      label: response.data.data.user.gender == "M" ? "Male" : "Female",
+    });
+  };
 
   const onSubmit: SubmitHandler<Register> = async (data) => {
     try {
@@ -81,7 +101,7 @@ const Page = () => {
         body: JSON.stringify({
           ...data,
           image: imageUrl,
-          birthDate: date,
+          birthDate: birthDate,
           role: selectedRole?.value,
           gender: selectedGender?.value,
         }),
@@ -95,6 +115,10 @@ const Page = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    getUserProfile();
+  }, []);
 
   return (
     // PAGE
@@ -120,22 +144,25 @@ const Page = () => {
           </a>
           <h1 className="text-[#ff5757] text-2xl font-bold">Personal Detail</h1>
         </nav>
-        {/* <p className="text-black">{register?.name}</p> */}
         {/*IMAGE*/}
         <div className="flex flex-col items-center gap-4">
-          <div className="w-[150px] h-[150px] rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-full h-full text-[#d9d9d9]"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+          <div className="w-[150px] h-[150px] rounded-full overflow-hidden">
+            {userProfile?.image ? (
+              <img width={150} height={150} src={userProfile?.image} alt="" />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-full h-full text-[#d9d9d9] animate-pulse"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
           </div>
           <button className="relative border border-[#ff5757] rounded-full overflow-hidden hover:cursor-pointer px-3 py-1">
             <p className="text-[#ff5757] hover:cursor-pointer">Choose file</p>
@@ -152,16 +179,16 @@ const Page = () => {
             />
           </button>
         </div>
-        {/* LAST NAME */}
+        {/* NAME */}
         <div className="w-full">
-          <label className="text-black" htmlFor="lastName">
+          <label className="text-black" htmlFor="name">
             Name
           </label>
           <input
-            id="lastName"
+            id="name"
             type="text"
             placeholder="Enter your last name"
-            defaultValue=""
+            defaultValue={userProfile?.name}
             {...register("name", {
               required: {
                 value: true,
@@ -185,7 +212,7 @@ const Page = () => {
           <input
             id="email"
             {...register("email")}
-            defaultValue=""
+            defaultValue={userProfile?.email}
             type="email"
             placeholder="Enter your email"
             {...register("email", {
@@ -217,7 +244,7 @@ const Page = () => {
             id="phone"
             type="number"
             placeholder="(XXX)-XXXX-XXXX"
-            defaultValue=""
+            defaultValue={userProfile?.phone}
             {...register("phone", {
               required: {
                 value: true,
@@ -261,26 +288,27 @@ const Page = () => {
         <p className="text-black text-left w-full -mb-4">Birth Date</p>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
+            value={birthDate}
+            onChange={(date) => setBirthDate(date)}
             format="YYYY - MM - DD"
             sx={{
               width: "100%",
               backgroundColor: "rgba(217, 217, 217, 0.3)",
-              // borderColor: "#ff5757",
-              // outline: "#ff5757",
               borderRadius: "8px",
             }}
           />
         </LocalizationProvider>
+        {/* <h1 className="text-black">{birthDate?.$d.toString()}</h1> */}
 
         {/*GENDER*/}
-        <GenderSelect
+        {/* <GenderSelect
           selectedGender={selectedGender}
           setSelectedGender={setSelectedGender}
         />
         <RoleSelect
           selectedRole={selectedRole}
           setSelectedRole={setSelectedRole}
-        />
+        /> */}
         {/* SUBMIT */}
         <button
           type="submit"
