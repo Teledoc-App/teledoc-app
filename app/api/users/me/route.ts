@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
         gender: true,
         birthDate: true,
         role: true,
+        doctor: true,
         image: true,
         patientAppointments: {
           select: {

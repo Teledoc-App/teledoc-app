@@ -98,7 +98,6 @@ const Page = () => {
 
   useEffect(() => {
     updateImage();
-    // console.log(imageInput ? imageInput[0] : undefined);
   }, [imageInput]);
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
