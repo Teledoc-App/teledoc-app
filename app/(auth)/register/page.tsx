@@ -7,7 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import IconRolling from "../../../assets/rolling.svg";
 
 import Select from "react-select";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ImageKit from "imagekit";
 import { format } from "date-fns";
@@ -16,14 +16,6 @@ import { redirect, useRouter } from "next/navigation";
 import GenderSelect from "@/components/GenderSelect";
 import RoleSelect from "@/components/RoleSelect";
 import Image from "next/image";
-// import { cn } from "@/lib/utils";
-// import { Button } from "@/components/ui/button";
-// import { Calendar } from "@/components/ui/calendar";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
 
 interface Register {
   name: string;
@@ -65,7 +57,8 @@ const Page = () => {
 
   const [birthDate, setBirthDate] = React.useState<Date | null>(null);
 
-  const [uploadedImage, setUploadedImage] = useState("");
+  const [imageInput, setImageInput] = useState<FileList | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
 
   const [selectedGender, setSelectedGender] = useState<Gender>({
     value: "M",
@@ -85,44 +78,36 @@ const Page = () => {
 
   const [imageUploadKey, setImageUploadKey] = useState(Date.now());
 
-  const uploadImage = async () => {
+  const updateImage = async () => {
     setIsUploading(true);
     try {
-      const file = await getValues("image")[0];
-
+      const file = imageInput ? imageInput[0] : undefined;
       console.log(file);
 
       const imageKitResponse = await imageKit.upload({
         file: file as any,
         fileName: `${Date.now()}-${file}`,
       });
-      const imageUrl = `${imageKitResponse.url}?${imageUploadKey}`;
-      // const imageUrl = imageKitResponse.url;
 
-      console.log(imageUrl);
-      setUploadedImage(imageUrl);
+      setImageUrl(`${imageKitResponse.url}?${imageUploadKey}`);
     } catch (error) {
       console.log(error);
     }
     setIsUploading(false);
   };
 
-  const handleFileInputChange = () => {
-    uploadImage();
+  useEffect(() => {
+    updateImage();
+    // console.log(imageInput ? imageInput[0] : undefined);
+  }, [imageInput]);
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setImageInput(e.target.files);
   };
 
   const onSubmit: SubmitHandler<Register> = async (data) => {
     setIsLoading(true);
     try {
-      // Upload gambar ke ImageKit
-      const file = data.image[0]; // Ambil gambar dari form input
-
-      const imageKitResponse = await imageKit.upload({
-        file: file as any,
-        fileName: `${Date.now()}-${file}`,
-      });
-      const imageUrl = imageKitResponse.url;
-
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
@@ -179,8 +164,8 @@ const Page = () => {
         {/*IMAGE*/}
         <div className="flex flex-col items-center gap-4">
           <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
-            {uploadedImage ? (
-              <img width={150} height={150} src={uploadedImage} alt="" />
+            {imageUrl ? (
+              <img width={150} height={150} src={imageUrl} alt="" />
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -216,22 +201,17 @@ const Page = () => {
             >
               {isUploading
                 ? "Uploading..."
-                : (!isUploading && !errors.image) || uploadedImage
+                : !isUploading && !errors.image && imageInput == null
                 ? "Upload an image"
+                : !isUploading && !errors.image && imageInput !== null
+                ? "Change image"
                 : errors.image?.message}
             </p>
             <input
-              className="absolute top-0 left-0 z-20 w-full h-full bg-blue-300 opacity-0 hover:cursor-pointer"
               type="file"
+              className="absolute top-0 left-0 z-20 w-full h-full bg-blue-300 opacity-0 hover:cursor-pointer"
               accept="image/*"
-              {...register("image", {
-                required: {
-                  value: true,
-                  message: "Image is a required field",
-                },
-              })}
               onChange={handleFileInputChange}
-              key={imageUploadKey}
             />
           </button>
         </div>

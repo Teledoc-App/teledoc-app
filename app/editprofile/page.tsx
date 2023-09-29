@@ -84,6 +84,8 @@ const Page = () => {
   };
 
   const onSubmit: SubmitHandler<Register> = async (data) => {
+    console.log(data);
+
     try {
       // Upload gambar ke ImageKit
       const file = data.image[0]; // Ambil gambar dari form input
