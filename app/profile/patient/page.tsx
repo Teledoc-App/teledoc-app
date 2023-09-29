@@ -9,7 +9,7 @@ interface Profile {
 	image: string;
 }
 
-const patientProfile: React.FC = () => {
+const PatientProfile: React.FC = () => {
 	const [userProfile, setUserProfile] = useState<Profile>();
 	const getUserProfile = async () => {
 		const response = await axios.get("../../api/users/me");
@@ -125,4 +125,4 @@ const patientProfile: React.FC = () => {
 	);
 };
 
-export default patientProfile;
+export default PatientProfile;
