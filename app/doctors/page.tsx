@@ -16,7 +16,7 @@ interface Profile {
 	name: string;
 }
 
-export default function appointment({ params }: { params: { id: string } }) {
+export default function Appointment({ params }: { params: { id: string } }) {
 	const router = useRouter();
 	const [doctorDetail, setdoctorDetail] = useState<DoctorDetail>();
 	const [reason, setReason] = useState("");
