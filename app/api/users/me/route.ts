@@ -56,11 +56,13 @@ export async function GET(req: NextRequest) {
         },
         doctorAppointments: {
           select: {
+            id: true,
             patient: {
               select: {
                 name: true,
                 birthDate: true,
                 gender: true,
+                image: true,
               },
             },
             reason: true,
