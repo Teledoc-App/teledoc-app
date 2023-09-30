@@ -79,7 +79,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 
 		var config = {
 			method: "post",
-			url: "http://localhost:3000/api/appointment",
+			url: "http://teledoc.tech/api/appointment",
 			headers: {
 				"Cache-Control": "no-cache",
 			},
