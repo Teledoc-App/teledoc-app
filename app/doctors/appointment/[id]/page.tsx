@@ -53,7 +53,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 		getUserProfile();
 	}, []);
 
-	const arrayDisabledHours = ["08:00"];
+	// const arrayDisabledHours = ["08:00"];
 	const arrayHours = ["08:00", "09:00"];
 
 	for (let nIndex = 10; nIndex <= 22; nIndex++) {
@@ -208,7 +208,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 									key={`appointment-${sHour}`}
 									type="button"
 									className="bg-[#ffffff] text-[#ff5757] px-4 py-1 border-solid border-2 border-[#ff5757] rounded-2xl hover:bg-[#ff5757] hover:text-[#ffffff]  disabled:bg-[#d9d9d9] disabled:text-[#858585] disabled:border-[#d9d9d9] focus:bg-[#ff5757] focus:text-[#ffffff]"
-									disabled={arrayDisabledHours.includes(sHour)}
+									// disabled={arrayDisabledHours.includes(sHour)}
 									onClick={() => handleTimeClick(sHour)}
 								>
 									{sHour}

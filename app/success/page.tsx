@@ -35,7 +35,7 @@ const Success: React.FC = () => {
 					</p>
 				</div>
 				<div className="flex justify-center">
-					<Link href={"/homepagepatient"}>
+					<Link href={"/home/patient"}>
 						<button className="bg-[#ff5757] w-[400px] text-white px-4 py-1 rounded-xl mt-3">
 							Back to Home
 						</button>

@@ -50,7 +50,7 @@ const PatientProfile: React.FC = () => {
 					<h1 className="text-[#000000] text-xl font-bold">{userProfile?.name}</h1>
 				</div>
 
-				<Link href="../home/patient">
+				<Link href="../editprofile">
 					<div className="flex  items-center pt-5 w-[400px]">
 						<div className="flex items-center">
 							<svg
