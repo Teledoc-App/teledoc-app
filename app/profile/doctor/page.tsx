@@ -25,7 +25,7 @@ const DoctorProfile: React.FC = () => {
 		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
 				<nav className="flex justify-center items-center w-full relative">
-					<a href="./login" className="absolute left-0">
+					<a href="/home/doctor" className="absolute left-0">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
@@ -55,7 +55,7 @@ const DoctorProfile: React.FC = () => {
 					<h1 className="text-[#000000] text-xl font-bold">{userProfile?.name}</h1>
 				</div>
 
-				<Link href="../personaldetaildoctor">
+				<Link href="../editprofile">
 					<div className="flex  items-center pt-5 w-[400px]">
 						<div className="flex items-center">
 							<svg
