@@ -11,7 +11,7 @@
 
 <br>
 <div align="center">
-<img width="80%" alt="App screenshot" src="/public/teledoc.png">
+<img width="80%" alt="App screenshot" src="/assets/teledoc.png">
 </div>
 <br>
 <br>
