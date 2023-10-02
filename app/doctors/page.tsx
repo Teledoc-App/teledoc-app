@@ -35,7 +35,7 @@ const Doctors: React.FC = () => {
 
 	useEffect(() => {
 		// Fetch data from the API
-		fetch("http://teledoc.tech/api/doctor")
+		fetch("https://teledoc.tech/api/doctor")
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -44,9 +44,9 @@ const Doctors: React.FC = () => {
 			.catch((error) => console.error("Error fetching data:", error));
 	}, []);
 	return (
-		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
+		<div className="flex items-center justify-center w-screen px-4 py-4 bg-white h-fit ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
-				<nav className="flex justify-center items-center w-full relative">
+				<nav className="relative flex items-center justify-center w-full">
 					<a href="./home/patient" className="absolute left-0">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
