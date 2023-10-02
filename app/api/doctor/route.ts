@@ -19,24 +19,24 @@ export async function GET(req: Request) {
           select: {
             image: true,
             role: true,
-            doctorAppointments: {
-              select: {
-                time: true,
-                date: true,
-                status: true,
-                reason: true,
-                description: true,
-                patient: {
-                  select: {
-                    name: true,
-                    gender: true,
-                    birthDate: true,
-                    image: true,
-                    phone: true,
-                  },
-                },
-              },
-            },
+            // doctorAppointments: {
+            //   select: {
+            //     time: true,
+            //     date: true,
+            //     status: true,
+            //     reason: true,
+            //     description: true,
+            //     patient: {
+            //       select: {
+            //         name: true,
+            //         gender: true,
+            //         birthDate: true,
+            //         image: true,
+            //         phone: true,
+            //       },
+            //     },
+            //   },
+            // },
           },
         },
       },
