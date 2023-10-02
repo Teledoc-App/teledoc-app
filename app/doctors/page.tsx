@@ -35,7 +35,7 @@ const Doctors: React.FC = () => {
 
 	useEffect(() => {
 		// Fetch data from the API
-		fetch("https://teledoc.tech/api/doctor")
+		fetch("../../api/doctor")
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
