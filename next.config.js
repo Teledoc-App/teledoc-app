@@ -27,7 +27,7 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["img.freepik.com", "lh3.googleusercontent.com"],
+    domains: ["img.freepik.com", "lh3.googleusercontent.com", "d1e8la4lqf1h28.cloudfront.net", "ik.imagekit.io","lh3.googleusercontent.com", "www.w3.org", "cdn.vectorstock.com"],
   },
 };
 

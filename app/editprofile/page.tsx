@@ -195,12 +195,12 @@ const Page = () => {
 
 	return (
 		// PAGE
-		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 overflow-y-scroll">
+		<div className="flex items-center justify-center w-screen px-4 py-4 overflow-y-scroll bg-white h-fit">
 			<form
 				onSubmit={handleSubmit(onSubmit)}
 				className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 overflow-y-scroll"
 			>
-				<nav className="flex justify-center items-center w-full relative">
+				<nav className="relative flex items-center justify-center w-full">
 					<a href="/home/patient" className="absolute left-0">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -236,11 +236,11 @@ const Page = () => {
 								/>
 							</svg>
 						) : (
-							<img width={150} height={150} src={imageUrl} alt="" />
+							<Image width={150} height={150} src={imageUrl} alt="" />
 						)}
 						{/* LOADING */}
 						{isUploading && (
-							<div className="w-full h-full left-0 top-0 bg-white/80 z-50 absolute flex justify-center items-center">
+							<div className="absolute top-0 left-0 z-50 flex items-center justify-center w-full h-full bg-white/80">
 								<Image width={40} height={40} src={IconRolling} alt="" />
 							</div>
 						)}
@@ -429,7 +429,7 @@ const Page = () => {
 					<p className="text-amber-500">{errors?.password?.message}</p>
 				</div>
 				{/*BIRTHDATE*/}
-				{/* <p className="text-black text-left w-full -mb-4">Birth Date</p> */}
+				{/* <p className="w-full -mb-4 text-left text-black">Birth Date</p> */}
 				{/* <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             value={birthDate}

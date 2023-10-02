@@ -6,7 +6,7 @@ import axios from "axios";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 interface DoctorDetail {
 	username: string;
 	price: string;
@@ -79,7 +79,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 
 		var config = {
 			method: "post",
-			url: "http://teledoc.tech/api/appointment",
+			url: "../../api/appointment",
 			headers: {
 				"Cache-Control": "no-cache",
 			},
@@ -104,12 +104,12 @@ export default function Appointment({ params }: { params: { id: string } }) {
 	};
 
 	return (
-		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
+		<div className="flex items-center justify-center w-screen px-4 py-4 bg-white h-fit ">
 			<form
 				className="w-full max-w-[400px] flex flex-col items-center gap-2 py-2 "
 				onSubmit={handleSubmit}
 			>
-				<nav className="flex justify-center items-center w-full relative">
+				<nav className="relative flex items-center justify-center w-full">
 					<a href="../" className="absolute left-0">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -127,9 +127,9 @@ export default function Appointment({ params }: { params: { id: string } }) {
 					<h1 className="text-[#ff5757] text-2xl font-bold">Appointment</h1>
 				</nav>
 
-				<div className="flex justify-center items-center mt-7">
-					<div className="p-2 flex ">
-						<img
+				<div className="flex items-center justify-center mt-7">
+					<div className="flex p-2 ">
+						<Image
 							className="w-[120px] h-[120px] rounded-full"
 							src="https://picsum.photos/200"
 							alt="Profile picture"
@@ -200,7 +200,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 					<h1 className="text-[#000000] text-xl font-bold">Time</h1>
 				</div>
 
-				<div className="flex justify-center items-center">
+				<div className="flex items-center justify-center">
 					<div className="container w-[400px]">
 						<div className="grid grid-cols-3 gap-3">
 							{arrayHours.map((sHour) => (

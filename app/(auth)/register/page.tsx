@@ -164,7 +164,7 @@ const Page = () => {
         <div className="flex flex-col items-center gap-4">
           <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
             {imageUrl ? (
-              <img width={150} height={150} src={imageUrl} alt="" />
+              <Image width={150} height={150} src={imageUrl} alt="" />
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +181,7 @@ const Page = () => {
             )}
             {/* LOADING */}
             {isUploading && (
-              <div className="w-full h-full left-0 top-0 bg-white/80 z-50 absolute flex justify-center items-center">
+              <div className="absolute top-0 left-0 z-50 flex items-center justify-center w-full h-full bg-white/80">
                 <Image width={40} height={40} src={IconRolling} alt="" />
               </div>
             )}

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
-
+import Image from "next/image";
 // interface specialistProps {
 //   id: string;
 //   title: string;
@@ -26,10 +26,10 @@ import React from "react";
 
 const HistoryCards = (props: { appointment: any }) => {
   return (
-    <div className="flex justify-center items-center py-2">
+    <div className="flex items-center justify-center py-2">
       <div className="container flex bg-[#d9d9d9]/30 h-[120px] w-[400px] px-4 rounded-lg border text-gray-400 outline-none">
-        <div className="p-2 flex items-center">
-          <img
+        <div className="flex items-center p-2">
+          <Image
             className="w-20 h-20 rounded-full"
             src={
               "https://cdn.vectorstock.com/i/preview-1x/82/99/no-image-available-like-missing-picture-vector-43938299.jpg"
