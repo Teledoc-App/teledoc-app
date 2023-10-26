@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function RejectReason(props: { appointmentId: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [reason, setReason] = useState("");
+  const [rejectionReason, setRejectionReason] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const rejected = "e209365d-44ef-4c5d-8eea-42c827dbaeb1";
@@ -19,7 +19,7 @@ export default function RejectReason(props: { appointmentId: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          reason: reason,
+          rejectionReason: rejectionReason,
           statusId: rejected,
         }),
       });
@@ -56,9 +56,9 @@ export default function RejectReason(props: { appointmentId: string }) {
           {/* CHOICES */}
           <div className="grid gap-4 lg:grid-cols-2 mb-8">
             <button
-              onClick={() => setReason("Full booked at desired time")}
+              onClick={() => setRejectionReason("Full booked at desired time")}
               className={`border ${
-                reason == "Full booked at desired time"
+                rejectionReason == "Full booked at desired time"
                   ? "bg-[#ff5757] text-white"
                   : "bg-white text-[#ff5757]"
               } border border-[#ff5757] rounded-lg py-2 px-4`}
@@ -66,9 +66,9 @@ export default function RejectReason(props: { appointmentId: string }) {
               Full booked at desired time
             </button>
             <button
-              onClick={() => setReason("Doctor not on duty")}
+              onClick={() => setRejectionReason("Doctor not on duty")}
               className={`border ${
-                reason == "Doctor not on duty"
+                rejectionReason == "Doctor not on duty"
                   ? "bg-[#ff5757] text-white"
                   : "bg-white text-[#ff5757]"
               } border border-[#ff5757] rounded-lg py-2 px-4`}
@@ -76,9 +76,9 @@ export default function RejectReason(props: { appointmentId: string }) {
               Doctor not on duty
             </button>{" "}
             <button
-              onClick={() => setReason("Out of doctor expertise")}
+              onClick={() => setRejectionReason("Out of doctor expertise")}
               className={`border ${
-                reason == "Out of doctor expertise"
+                rejectionReason == "Out of doctor expertise"
                   ? "bg-[#ff5757] text-white"
                   : "bg-white text-[#ff5757]"
               } border border-[#ff5757] rounded-lg py-2 px-4`}
@@ -86,9 +86,9 @@ export default function RejectReason(props: { appointmentId: string }) {
               Out of doctor expertise
             </button>{" "}
             <button
-              onClick={() => setReason("Unavailable")}
+              onClick={() => setRejectionReason("Unavailable")}
               className={`border ${
-                reason == "Unavailable"
+                rejectionReason == "Unavailable"
                   ? "bg-[#ff5757] text-white"
                   : "bg-white text-[#ff5757]"
               } border border-[#ff5757] rounded-lg py-2 px-4`}

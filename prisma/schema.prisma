@@ -35,8 +35,8 @@ model Session {
 }
 
 model Doctor {
-  username     String
-  strNumber    String
+  username     String?
+  strNumber    String?
   price        Int?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @default(now()) @updatedAt
@@ -56,19 +56,20 @@ model Specialist {
 }
 
 model Appointment {
-  id          String    @id @default(uuid())
-  reason      String?
-  description String?
-  time        String?
-  date        DateTime?
-  statusId    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  status      Status    @relation(fields: [statusId], references: [id], onUpdate: Cascade)
-  patientId   String?
-  patient     User?     @relation(fields: [patientId], references: [id], "patient")
-  doctorId    String
-  doctor      User      @relation(fields: [doctorId], references: [id], "doctor")
+  id              String    @id @default(uuid())
+  symptoms        String?
+  description     String?
+  time            String?
+  date            DateTime?
+  statusId        String
+  rejectionReason String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  status          Status    @relation(fields: [statusId], references: [id], onUpdate: Cascade)
+  patientId       String?
+  patient         User?     @relation(fields: [patientId], references: [id], "patient")
+  doctorId        String
+  doctor          User      @relation(fields: [doctorId], references: [id], "doctor")
 }
 
 model Status {
