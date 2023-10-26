@@ -5,7 +5,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface Appointment {
-  reason: string;
+  symptoms: string;
+  rejectionReason: string;
   status: {
     name: string;
   };
@@ -90,7 +91,7 @@ const History: React.FC = () => {
               {appointment.status.name}
             </p>
             {appointment.status.name == "rejected" && (
-              <p className="text-sm">({appointment.reason})</p>
+              <p className="text-sm">({appointment.rejectionReason})</p>
             )}
           </div>
         </div>

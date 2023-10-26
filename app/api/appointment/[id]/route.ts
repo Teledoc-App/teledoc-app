@@ -12,7 +12,8 @@ export async function GET(
     },
     select: {
       id: true,
-      reason: true,
+      symptoms: true,
+      rejectionReason: true,
       description: true,
       time: true,
       date: true,
@@ -72,7 +73,8 @@ export async function PATCH(
       where: { id },
       data: json,
       select: {
-        reason: true,
+        symptoms: true,
+        rejectionReason: true,
         description: true,
         time: true,
         date: true,
