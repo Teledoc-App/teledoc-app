@@ -19,7 +19,7 @@ interface Profile {
 export default function Appointment({ params }: { params: { id: string } }) {
 	const router = useRouter();
 	const [doctorDetail, setdoctorDetail] = useState<DoctorDetail>();
-	const [reason, setReason] = useState("");
+	const [symptoms, setSymptoms] = useState("");
 	const [description, setDescription] = useState("");
 	const [time, setTime] = useState("");
 	const [username, setUsername] = useState("");
@@ -65,7 +65,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 		router.push("../../success");
 
 		const data = {
-			reason,
+			symptoms,
 			description,
 			date,
 			time,
@@ -155,8 +155,8 @@ export default function Appointment({ params }: { params: { id: string } }) {
 						className="bg-[#d9d9d9]/30 h-[40px] w-[400px]  px-4 rounded-lg border text-[#000000] outline-none "
 						type="text"
 						placeholder="Enter reason of appointment"
-						value={reason}
-						onChange={(e) => setReason(e.target.value)}
+						value={symptoms}
+						onChange={(e) => setSymptoms(e.target.value)}
 					/>
 				</div>
 
