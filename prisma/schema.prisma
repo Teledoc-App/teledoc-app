@@ -57,11 +57,12 @@ model Specialist {
 
 model Appointment {
   id          String    @id @default(uuid())
-  reason      String?
+  symptoms    String?
   description String?
   time        String?
   date        DateTime?
   statusId    String
+  rejectionReason String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now()) @updatedAt
   status      Status    @relation(fields: [statusId], references: [id], onUpdate: Cascade)
