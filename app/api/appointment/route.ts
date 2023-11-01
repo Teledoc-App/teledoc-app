@@ -107,12 +107,17 @@ export async function POST(request: Request) {
     const appointment = await db.appointment.create({
       data: json,
     });
+    const notification = await db.notification.create({
+      data: json,
+    });
 
     let json_response = {
       status: "success",
       data: {
         appointment,
+        notification,
       },
+      
     };
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,

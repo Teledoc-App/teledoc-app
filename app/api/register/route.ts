@@ -49,7 +49,15 @@ export async function POST(req: Request){
                 birthDate: parsedBirthDate,
                 role
             }
-        });
+            });
+            if (role === "doctor") {
+                const doctorData = {
+                    username: "", 
+                    strNumber: "", 
+                    price: null, 
+                };
+            
+        };
         const { password: newUserPassword, ...rest } = newUser
         return NextResponse.json({user: rest, message: "User create successfully"}, {status: 201});
     } catch(error) {
