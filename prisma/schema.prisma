@@ -101,6 +101,7 @@ model User {
   Notification_Notification_receiverIdToUser Notification[] @relation("Notification_receiverIdToUser")
   Notification_Notification_senderIdToUser   Notification[] @relation("Notification_senderIdToUser")
   Session                                    Session[]
+
 }
 
 model VerificationToken {
@@ -122,6 +123,7 @@ model Notification {
   User_Notification_receiverIdToUser User        @relation("Notification_receiverIdToUser", fields: [receiverId], references: [id])
   User_Notification_senderIdToUser   User        @relation("Notification_senderIdToUser", fields: [senderId], references: [id])
 }
+
 
 enum UserGender {
   F
