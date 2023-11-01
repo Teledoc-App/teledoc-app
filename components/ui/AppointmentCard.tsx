@@ -3,6 +3,7 @@
 import { log } from "console";
 import { useEffect, useState } from "react";
 import { parseISO } from "date-fns";
+import RejectReason from "../RejectReason";
 
 interface Appointment {
   statusId: string;
@@ -14,6 +15,7 @@ interface Appointment {
     name: string;
   };
 }
+
 export default function AppointmentCard(props: { appointment: Appointment }) {
   const rejected = "e209365d-44ef-4c5d-8eea-42c827dbaeb1";
   const accepted = "6d86abcc-f29b-4a64-9af4-4b55c4f1ee2b";
@@ -50,6 +52,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
       }),
     });
   };
+
   const reject = async (id: string) => {
     setIsAccepted(rejected);
     const response = await fetch("/api/appointment/" + id, {
@@ -93,7 +96,13 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
   //   };
 
   return (
-    <div className="flex gap-4 w-full bg-[#d9d9d9]/30 rounded-lg p-6 mb-4">
+    <div
+      className={`flex gap-4 w-full bg-[#d9d9d9]/30 rounded-lg p-6 mb-4 ${
+        props.appointment.statusId == "e209365d-44ef-4c5d-8eea-42c827dbaeb1"
+          ? "hidden"
+          : null
+      }`}
+    >
       {/* PICTURE */}
       {props.appointment.patient?.image == null ? (
         <svg
@@ -120,7 +129,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
       )}
 
       {/* INFORMATIONS */}
-      <div>
+      <div className="">
         <span className="text-[16px] font-semibold">
           {props.appointment.patient?.name}
         </span>
@@ -154,12 +163,13 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
             >
               Accept
             </button>
-            <button
+            <RejectReason appointmentId={props.appointment.id} />
+            {/* <button
               onClick={() => reject(props.appointment.id)}
               className="px-4 py-1 border rounded-full border-[#ff5757] text-[#ff5757]"
             >
               Reject
-            </button>
+            </button> */}
           </div>
         )}
 

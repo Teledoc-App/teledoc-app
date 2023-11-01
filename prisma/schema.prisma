@@ -82,37 +82,26 @@ model Status {
 }
 
 model User {
-  id                   String         @id @default(uuid())
-  name                 String
-  email                String         @unique
-  emailVerified        DateTime?
-  phone                String?        @unique
-  password             String?
-  gender               UserGender?
-  birthDate            DateTime?      @db.Date
-  image                String?
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @default(now()) @updatedAt
-  role                 String?        @default("patient")
-  Account              Account[]
-  doctorAppointments   Appointment[]  @relation("doctor")
-  patientAppointments  Appointment[]  @relation("patient")
-  doctor               Doctor?
-  Session              Session[]
-  senderNotification   Notification[] @relation("sender")
-  receiverNotification Notification[] @relation("receiver")
-}
+  id                                         String         @id @default(uuid())
+  name                                       String
+  email                                      String         @unique
+  emailVerified                              DateTime?
+  phone                                      String?        @unique
+  password                                   String?
+  gender                                     UserGender?
+  birthDate                                  DateTime?      @db.Date
+  image                                      String?
+  createdAt                                  DateTime       @default(now())
+  updatedAt                                  DateTime       @default(now()) @updatedAt
+  role                                       String?        @default("patient")
+  Account                                    Account[]
+  doctorAppointments                         Appointment[]  @relation("doctor")
+  patientAppointments                        Appointment[]  @relation("patient")
+  doctor                                     Doctor?
+  Notification_Notification_receiverIdToUser Notification[] @relation("Notification_receiverIdToUser")
+  Notification_Notification_senderIdToUser   Notification[] @relation("Notification_senderIdToUser")
+  Session                                    Session[]
 
-model Notification {
-  id            String      @id @default(uuid())
-  message       String
-  appointmentId String
-  appointment   Appointment @relation(fields: [appointmentId], references: [id])
-  senderId      String
-  sender        User        @relation("sender", fields: [senderId], references: [id])
-  receiverId    String
-  receiver      User        @relation("receiver", fields: [receiverId], references: [id])
-  createdAt     DateTime
 }
 
 model VerificationToken {
@@ -122,6 +111,19 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Notification {
+  id                                 String      @id
+  message                            String
+  appointmentId                      String
+  senderId                           String
+  receiverId                         String
+  createdAt                          DateTime
+  Appointment                        Appointment @relation(fields: [appointmentId], references: [id])
+  User_Notification_receiverIdToUser User        @relation("Notification_receiverIdToUser", fields: [receiverId], references: [id])
+  User_Notification_senderIdToUser   User        @relation("Notification_senderIdToUser", fields: [senderId], references: [id])
+}
+
 
 enum UserGender {
   F
