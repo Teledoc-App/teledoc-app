@@ -56,21 +56,21 @@ model Specialist {
 }
 
 model Appointment {
-  id              String         @id @default(uuid())
+  id              String        @id @default(uuid())
   description     String?
   time            String?
   date            DateTime?
   statusId        String
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @default(now()) @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now()) @updatedAt
   patientId       String?
   doctorId        String
   rejectionReason String?
   symptoms        String?
-  doctor          User           @relation("doctor", fields: [doctorId], references: [id])
-  patient         User?          @relation("patient", fields: [patientId], references: [id])
-  status          Status         @relation(fields: [statusId], references: [id])
-  Notification    Notification[]
+  doctor          User          @relation("doctor", fields: [doctorId], references: [id])
+  patient         User?         @relation("patient", fields: [patientId], references: [id])
+  status          Status        @relation(fields: [statusId], references: [id])
+  notification    Notification?
 }
 
 model Status {
@@ -113,7 +113,7 @@ model VerificationToken {
 
 model Notification {
   id                   String      @id
-  appointmentId        String
+  appointmentId        String      @unique
   senderId             String
   receiverId           String
   createdAt            DateTime

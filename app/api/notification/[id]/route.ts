@@ -15,13 +15,13 @@ export async function GET(
       senderId: true,
       receiverId: true,
       createdAt: true,
-      User_Notification_receiverIdToUser: {
+      receiverNotification: {
         select: {
           name: true,
           image: true,
         }
       }, 
-      User_Notification_senderIdToUser: {
+      senderNotification: {
         select: {
           name: true,
           image: true,
@@ -58,7 +58,7 @@ export async function GET(
     },
   });
 
-  if (!status) {
+  if (!notification) {
     let error_response = {
       status: "fail",
       message: "No status with the Provided ID Found",
@@ -72,7 +72,7 @@ export async function GET(
   let json_response = {
     status: "success",
     data: {
-      status,
+      notification,
     },
   };
   return NextResponse.json(json_response);
@@ -86,12 +86,27 @@ export async function PATCH(
     const id = params.id;
     let json = await request.json();
 
-    const updated_status = await db.status.update({
+    const updated_notification = await db.notification.update({
       where: { id },
       data: json,
       select: {
-        name: true,
-        appointments: {
+        id: true,
+        senderId: true,
+        receiverId: true,
+        createdAt: true,
+        receiverNotification: {
+          select: {
+            name: true,
+            image: true,
+          }
+        }, 
+        senderNotification: {
+          select: {
+            name: true,
+            image: true,
+          }
+        }, 
+        appointment: {
           select: {
             doctor: {
               select: {
@@ -125,7 +140,7 @@ export async function PATCH(
     let json_response = {
       status: "success",
       data: {
-        status: updated_status,
+        status: updated_notification,
       },
     };
     return NextResponse.json(json_response);
@@ -158,7 +173,7 @@ export async function DELETE(
 ) {
   try {
     const id = params.id;
-    await db.status.delete({
+    await db.notification.delete({
       where: { id },
     });
 
