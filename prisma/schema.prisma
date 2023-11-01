@@ -14,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -35,15 +35,15 @@ model Session {
 }
 
 model Doctor {
-  username     String
-  strNumber    String
+  username     String?
+  strNumber    String?
   price        Int?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @default(now()) @updatedAt
-  specialist   Specialist? @relation(fields: [specialistId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   specialistId String?
-  user         User        @relation(fields: [userId], references: [id])
   userId       String      @unique
+  specialist   Specialist? @relation(fields: [specialistId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id])
 }
 
 model Specialist {
@@ -56,61 +56,51 @@ model Specialist {
 }
 
 model Appointment {
-  id              String    @id @default(uuid())
-  symptoms        String?
-  rejectionReason String?
+  id              String         @id @default(uuid())
   description     String?
   time            String?
   date            DateTime?
   statusId        String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now()) @updatedAt
-  status          Status    @relation(fields: [statusId], references: [id], onUpdate: Cascade)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now()) @updatedAt
   patientId       String?
-  patient         User?     @relation(fields: [patientId], references: [id], "patient")
   doctorId        String
-  doctor          User      @relation(fields: [doctorId], references: [id], "doctor")
+  rejectionReason String?
+  symptoms        String?
+  doctor          User           @relation("doctor", fields: [doctorId], references: [id])
+  patient         User?          @relation("patient", fields: [patientId], references: [id])
+  status          Status         @relation(fields: [statusId], references: [id])
+  Notification    Notification[]
 }
 
 model Status {
   id           String        @id @default(uuid())
-  name         String        @unique // "Available" | "Pending" |  "Rejected" | "Accepted" | "Done"
-  appointments Appointment[]
+  name         String        @unique
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
+  appointments Appointment[]
 }
-
-// model TimeSlot {
-//   id          String        @id @default(uuid())
-//   time        String
-//   date        DateTime
-//   appointment Appointment[]
-// }
 
 model User {
-  id                  String        @id @default(uuid())
-  name                String
-  email               String        @unique // TODO: Multiple emails
-  emailVerified       DateTime?
-  phone               String?       @unique // TODO: Multiple phones
-  password            String?
-  gender              UserGender?
-  birthDate           DateTime?     @db.Date
-  image               String?
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @default(now()) @updatedAt
-  role                String?       @default("patient") // "Doctor" | "Patient" | "Admin"
-  doctor              Doctor?
-  doctorAppointments  Appointment[] @relation("doctor")
-  patientAppointments Appointment[] @relation("patient")
-  Account             Account[]
-  Session             Session[]
-}
-
-enum UserGender {
-  F
-  M
-  O
+  id                                         String         @id @default(uuid())
+  name                                       String
+  email                                      String         @unique
+  emailVerified                              DateTime?
+  phone                                      String?        @unique
+  password                                   String?
+  gender                                     UserGender?
+  birthDate                                  DateTime?      @db.Date
+  image                                      String?
+  createdAt                                  DateTime       @default(now())
+  updatedAt                                  DateTime       @default(now()) @updatedAt
+  role                                       String?        @default("patient")
+  Account                                    Account[]
+  doctorAppointments                         Appointment[]  @relation("doctor")
+  patientAppointments                        Appointment[]  @relation("patient")
+  doctor                                     Doctor?
+  Notification_Notification_receiverIdToUser Notification[] @relation("Notification_receiverIdToUser")
+  Notification_Notification_senderIdToUser   Notification[] @relation("Notification_senderIdToUser")
+  Session                                    Session[]
 }
 
 model VerificationToken {
@@ -119,4 +109,22 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Notification {
+  id                                 String      @id
+  message                            String
+  appointmentId                      String
+  senderId                           String
+  receiverId                         String
+  createdAt                          DateTime
+  Appointment                        Appointment @relation(fields: [appointmentId], references: [id])
+  User_Notification_receiverIdToUser User        @relation("Notification_receiverIdToUser", fields: [receiverId], references: [id])
+  User_Notification_senderIdToUser   User        @relation("Notification_senderIdToUser", fields: [senderId], references: [id])
+}
+
+enum UserGender {
+  F
+  M
+  O
 }
