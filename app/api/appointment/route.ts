@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       description: true,
       time: true,
       date: true,
+      requestExtension: true,
       patient: {
         select: {
           name: true,
@@ -117,7 +118,6 @@ export async function POST(request: Request) {
         appointment,
         notification,
       },
-      
     };
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,

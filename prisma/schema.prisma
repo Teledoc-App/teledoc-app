@@ -67,6 +67,7 @@ model Appointment {
   doctorId        String
   rejectionReason String?
   symptoms        String?
+  requestExtension Boolean      @default(false)
   doctor          User          @relation("doctor", fields: [doctorId], references: [id])
   patient         User?         @relation("patient", fields: [patientId], references: [id])
   status          Status        @relation(fields: [statusId], references: [id])
@@ -112,11 +113,12 @@ model VerificationToken {
 }
 
 model Notification {
-  id                   String      @id
+  id                   String      @id @default(uuid())
   appointmentId        String      @unique
   senderId             String
   receiverId           String
-  createdAt            DateTime
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @default(now()) @updatedAt
   appointment          Appointment @relation(fields: [appointmentId], references: [id])
   receiverNotification User        @relation("receiverNotification", fields: [receiverId], references: [id])
   senderNotification   User        @relation("senderNotification", fields: [senderId], references: [id])
