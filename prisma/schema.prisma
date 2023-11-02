@@ -56,22 +56,22 @@ model Specialist {
 }
 
 model Appointment {
-  id              String        @id @default(uuid())
-  description     String?
-  time            String?
-  date            DateTime?
-  statusId        String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @default(now()) @updatedAt
-  patientId       String?
-  doctorId        String
-  rejectionReason String?
-  symptoms        String?
-  requestExtension Boolean      @default(false)
-  doctor          User          @relation("doctor", fields: [doctorId], references: [id])
-  patient         User?         @relation("patient", fields: [patientId], references: [id])
-  status          Status        @relation(fields: [statusId], references: [id])
-  notification    Notification?
+  id               String        @id @default(uuid())
+  description      String?
+  time             String?
+  date             DateTime?
+  statusId         String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
+  patientId        String?
+  doctorId         String
+  rejectionReason  String?
+  symptoms         String?
+  requestExtension Boolean       @default(false)
+  doctor           User          @relation("doctor", fields: [doctorId], references: [id])
+  patient          User?         @relation("patient", fields: [patientId], references: [id])
+  status           Status        @relation(fields: [statusId], references: [id])
+  notification     Notification?
 }
 
 model Status {
