@@ -3,6 +3,7 @@
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Appointment {
 	symptoms: string;
@@ -13,6 +14,7 @@ interface Appointment {
 	doctor: {
 		image: string;
 		doctor: {
+			userId: string;
 			username: string;
 			specialist: {
 				title: string;
@@ -94,9 +96,11 @@ const History: React.FC = () => {
 						<div className="py-2">
 							{appointment.status.name == "done" && (
 								<div>
-									<button className="border border-[#ff5757] text-white bg-[#ff5757] text-sm  px-4 py-1 rounded-lg">
-										Request Extension
-									</button>
+									<Link href={`/doctors/appointment/${appointment.doctor.doctor?.userId}`}>
+										<button className="border border-[#ff5757] text-white bg-[#ff5757] text-sm  px-4 py-1 rounded-lg">
+											Request Extension
+										</button>
+									</Link>
 								</div>
 							)}
 						</div>

@@ -17,6 +17,7 @@ export async function GET(
       description: true,
       time: true,
       date: true,
+      requestExtension: true,
       patient: {
         select: {
           name: true,
@@ -78,6 +79,7 @@ export async function PATCH(
         description: true,
         time: true,
         date: true,
+        requestExtension: true,
         patient: {
           select: {
             name: true,

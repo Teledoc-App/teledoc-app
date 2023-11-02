@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       description: true,
       time: true,
       date: true,
+      requestExtension: true,
       patient: {
         select: {
           name: true,
