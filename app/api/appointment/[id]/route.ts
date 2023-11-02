@@ -82,6 +82,7 @@ export async function PATCH(
         requestExtension: true,
         patient: {
           select: {
+            id: true,
             name: true,
             gender: true,
             birthDate: true,
@@ -89,6 +90,7 @@ export async function PATCH(
         },
         doctor: {
           select: {
+            id: true,
             doctor: {
               select: {
                 username: true,
@@ -103,7 +105,23 @@ export async function PATCH(
         },
       },
     });
-
+    if (!updated_appointment || !updated_appointment.patient) {
+      let error_response = {
+        status: "fail",
+        message: "Updated appointment or patient information is missing",
+      };
+      return new NextResponse(JSON.stringify(error_response), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+ await db.notification.create({
+      data: {
+        senderNotification: { connect: { id: updated_appointment.doctor.id} },
+        receiverNotification: { connect: { id: updated_appointment.patient.id } },
+        appointment: { connect: { id: id } },
+      },
+    });
     let json_response = {
       status: "success",
       data: {
