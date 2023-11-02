@@ -1,8 +1,55 @@
 import { Dialog } from "@headlessui/react";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  const formattedTime = (timestamp: Date) => {
+    const date = new Date(timestamp);
+
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Convert to 12-hour format
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12; // Handle midnight (0) as 12
+
+    // Pad single-digit minutes with a leading zero
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
+
+    return formattedTime;
+  };
+
+  const formattedDate = (timestamp: Date) => {
+    interface Options {
+      weekday: "long";
+      year: "numeric";
+      month: "long";
+      day: "numeric";
+    }
+    const date = new Date(timestamp);
+
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    const formattedDate = date.toLocaleDateString("en-US", options as Options);
+    return formattedDate;
+  };
+
+  const fetchNotifications = async () => {
+    const response = await axios.get("../../api/notification");
+    setNotifications(response.data.notification);
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
   return (
     <>
       {/* BELL BUTTON */}
@@ -40,78 +87,22 @@ export default function NotificationCenter() {
 
           {/* NOTIFICATIONS CONTAINER */}
           <div className="w-full flex flex-col overflow-y-scroll max-h-[265px]">
-            {/* NOTIFICATION */}
-            <div className="flex p-4 w-full border-b gap-4">
-              {/* IMAGE */}
-              <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full"></div>
-              {/* DATA */}
-              <div className="flex flex-col">
-                <span className="font-semibold text-[16px] ">Dr Pablo</span>
-                <p className="text-[#858585] text-[12px]">
-                  12.00 - Tuesday, 20 August 2023
-                </p>
+            {notifications.map((notification) => (
+              <div className="flex p-4 w-full border-b gap-4">
+                <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full overflow-hidden">
+                  <img src={notification.senderNotification.image} alt="" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-[16px] ">
+                    {notification.senderNotification.name}
+                  </span>
+                  <p className="text-[#858585] text-[12px]">
+                    {formattedTime(notification.createdAt)} -{" "}
+                    {formattedDate(notification.createdAt)}
+                  </p>
+                </div>
               </div>
-            </div>
-            {/* NOTIFICATION */}
-            <div className="flex p-4 w-full border-b gap-4">
-              {/* IMAGE */}
-              <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full"></div>
-              {/* DATA */}
-              <div className="flex flex-col">
-                <span className="font-semibold text-[16px] ">Dr Pablo</span>
-                <p className="text-[#858585] text-[12px]">
-                  12.00 - Tuesday, 20 August 2023
-                </p>
-              </div>
-            </div>{" "}
-            {/* NOTIFICATION */}
-            <div className="flex p-4 w-full border-b gap-4">
-              {/* IMAGE */}
-              <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full"></div>
-              {/* DATA */}
-              <div className="flex flex-col">
-                <span className="font-semibold text-[16px] ">Dr Pablo</span>
-                <p className="text-[#858585] text-[12px]">
-                  12.00 - Tuesday, 20 August 2023
-                </p>
-              </div>
-            </div>
-            {/* NOTIFICATION */}
-            <div className="flex p-4 w-full border-b gap-4">
-              {/* IMAGE */}
-              <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full"></div>
-              {/* DATA */}
-              <div className="flex flex-col">
-                <span className="font-semibold text-[16px] ">Dr Pablo</span>
-                <p className="text-[#858585] text-[12px]">
-                  12.00 - Tuesday, 20 August 2023
-                </p>
-              </div>
-            </div>
-            {/* NOTIFICATION */}
-            <div className="flex p-4 w-full border-b gap-4">
-              {/* IMAGE */}
-              <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full"></div>
-              {/* DATA */}
-              <div className="flex flex-col">
-                <span className="font-semibold text-[16px] ">Dr Pablo</span>
-                <p className="text-[#858585] text-[12px]">
-                  12.00 - Tuesday, 20 August 2023
-                </p>
-              </div>
-            </div>{" "}
-            {/* NOTIFICATION */}
-            <div className="flex p-4 w-full border-b gap-4">
-              {/* IMAGE */}
-              <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full"></div>
-              {/* DATA */}
-              <div className="flex flex-col">
-                <span className="font-semibold text-[16px] ">Dr Pablo</span>
-                <p className="text-[#858585] text-[12px]">
-                  12.00 - Tuesday, 20 August 2023
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
           {/* FOOTER */}
           <div className="p-4 flex justify-center items-center w-full">
