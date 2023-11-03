@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
 						description: true,
 						time: true,
 						date: true,
+						requestExtension: true,
 						status: {
 							select: {
 								name: true,

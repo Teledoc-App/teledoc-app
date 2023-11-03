@@ -4,10 +4,15 @@ import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Dialog } from "@headlessui/react";
+import { useRouter } from "next/navigation";
+import Appointment from "../doctors/appointment/[id]/page";
 
 interface Appointment {
+	id: string;
 	symptoms: string;
 	rejectionReason: string;
+	requestExtension: boolean;
 	status: {
 		name: string;
 	};
@@ -25,6 +30,8 @@ interface Appointment {
 
 const History: React.FC = () => {
 	const [history, setHistory] = useState<Appointment[]>();
+	const [isOpen, setIsOpen] = useState(false);
+	const router = useRouter();
 
 	async function fetchHistory() {
 		try {
@@ -38,6 +45,22 @@ const History: React.FC = () => {
 		} catch (error) {
 			console.log("Error fetching appointment history:", error);
 		}
+	}
+
+	const handleExtension = (appointmentId: string) => {
+		requestExtension(appointmentId);
+	};
+
+	async function requestExtension(appointmentId: string) {
+		try {
+			const response = await axios.patch(`../../api/appointment/${appointmentId}`, {
+				requestExtension: true,
+			});
+			console.log(response.data);
+		} catch (error) {
+			console.log(error);
+		}
+		// alert("Request Extension Successful");
 	}
 
 	useEffect(() => {
@@ -94,13 +117,27 @@ const History: React.FC = () => {
 							<p className="text-sm">({appointment.rejectionReason})</p>
 						)}
 						<div className="py-2">
-							{appointment.status.name == "done" && (
+							{appointment.status.name == "done" && appointment.requestExtension == false ? (
 								<div>
 									<Link href={`/doctors/appointment/${appointment.doctor.doctor?.userId}`}>
-										<button className="border border-[#ff5757] text-white bg-[#ff5757] text-sm  px-4 py-1 rounded-lg">
+										<button
+											onClick={() => handleExtension(appointment.id)}
+											className="border border-[#ff5757] text-white bg-[#ff5757] text-sm  px-4 py-1 rounded-lg"
+										>
 											Request Extension
 										</button>
 									</Link>
+								</div>
+							) : (
+								<div>
+									{appointment.status.name == "done" && appointment.requestExtension == true && (
+										<button
+											disabled
+											className="border border-[#858585] text-white bg-[#858585] text-sm  px-4 py-1 rounded-lg"
+										>
+											Request Extension
+										</button>
+									)}
 								</div>
 							)}
 						</div>
