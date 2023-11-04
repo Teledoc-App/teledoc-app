@@ -49,6 +49,7 @@ export default function NotificationCenter() {
 
   useEffect(() => {
     fetchNotifications();
+    console.log(notifications);
   }, []);
   return (
     <>
@@ -79,7 +80,7 @@ export default function NotificationCenter() {
         onClose={() => setIsOpen(false)}
         className={`w-screen fixed top-0 left-0 flex items-center justify-center px-2 mt-28`}
       >
-        <Dialog.Panel className="bg-white overflow-hidden rounded-lg w-full top-5 left-5 shadow-lg">
+        <Dialog.Panel className="bg-white overflow-hidden rounded-lg w-full max-w-[425px] top-5 left-5 shadow-lg">
           {/* TITLE */}
           <div className="bg-[#ff5757] h-[50px] p-4">
             <h3 className="text-white font-bold text-[16px]">Notifications</h3>
@@ -88,7 +89,10 @@ export default function NotificationCenter() {
           {/* NOTIFICATIONS CONTAINER */}
           <div className="w-full flex flex-col overflow-y-scroll max-h-[265px]">
             {notifications.map((notification) => (
-              <div className="flex p-4 w-full border-b gap-4">
+              <div
+                key={notification.id}
+                className="flex p-4 w-full border-b gap-4"
+              >
                 <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full overflow-hidden">
                   <img src={notification.senderNotification.image} alt="" />
                 </div>
