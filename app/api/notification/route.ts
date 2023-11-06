@@ -10,17 +10,20 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return getErrorResponse(401, "You are not logged in, please provide a token to gain access");
+      return getErrorResponse(
+        401,
+        "You are not logged in, please provide a token to gain access"
+      );
     }
 
     const userId = session.user.id;
 
     const notification = await db.notification.findMany({
       where: {
-        receiverId: userId, 
+        receiverId: userId,
       },
       orderBy: {
-        createdAt: 'desc', 
+        createdAt: "desc",
       },
       select: {
         id: true,
@@ -75,48 +78,6 @@ export async function GET(request: NextRequest) {
     };
     return NextResponse.json(json_response);
   } catch (error) {
-    // Tangani kesalahan jika terjadi kesalahan dalam mengambil sesi atau operasi database
-    return getErrorResponse(500, "Internal Server Error");
+    return getErrorResponse(500, "Internal Server Error");
   }
 }
-
-// export async function POST(request: Request) {
-//   try {
-//     const json = await request.json();
-
-//     const notification = await db.notification.create({
-//       data: json,
-//     });
-
-//     let json_response = {
-//       status: "success",
-//       data: {
-//         notification,
-//       },
-//     };
-//     return new NextResponse(JSON.stringify(json_response), {
-//       status: 201,
-//       headers: { "Content-Type": "application/json" },
-//     });
-//   } catch (error: any) {
-//     if (error.code === "P2002") {
-//       let error_response = {
-//         status: "fail",
-//         message: "status with title already exists",
-//       };
-//       return new NextResponse(JSON.stringify(error_response), {
-//         status: 409,
-//         headers: { "Content-Type": "application/json" },
-//       });
-//     }
-
-//     let error_response = {
-//       status: "error",
-//       message: error.message,
-//     };
-//     return new NextResponse(JSON.stringify(error_response), {
-//       status: 500,
-//       headers: { "Content-Type": "application/json" },
-//     });
-//   }
-// }
