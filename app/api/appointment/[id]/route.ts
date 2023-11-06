@@ -131,6 +131,11 @@ export async function PATCH(
       data: updated_appointment,
     });
 
+    io.emit("custom-event", {
+      eventType: "update-appointment",
+      data: updated_appointment,
+    });
+
     let json_response = {
       status: "success",
       data: {
