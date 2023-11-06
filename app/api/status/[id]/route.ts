@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { io } from "@/app/socketServer";
 
 export async function GET(
   request: Request,
@@ -106,6 +107,11 @@ export async function PATCH(
           },
         },
       },
+    });
+
+    io.emit("status-change", {
+      eventType: "status-change",
+      data: updated_status,
     });
 
     let json_response = {

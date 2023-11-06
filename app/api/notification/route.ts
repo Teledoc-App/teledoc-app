@@ -14,51 +14,51 @@ export async function GET(request: NextRequest) {
     //   skip,
     //   take: limit,
     select: {
-        id: true,
-        senderId: true,
-        receiverId: true,
-        createdAt: true,
-        receiverNotification: {
-          select: {
-            name: true,
-            image: true,
-          }
-        }, 
-        senderNotification: {
-          select: {
-            name: true,
-            image: true,
-          }
-        }, 
-        appointment: {
-          select: {
-            doctor: {
-              select: {
-                doctor: {
-                  select: {
-                    username: true,
-                  },
+      id: true,
+      senderId: true,
+      receiverId: true,
+      createdAt: true,
+      receiverNotification: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      senderNotification: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      appointment: {
+        select: {
+          doctor: {
+            select: {
+              doctor: {
+                select: {
+                  username: true,
                 },
               },
             },
-            patient: {
-              select: {
-                name: true,
-              },
+          },
+          patient: {
+            select: {
+              name: true,
             },
-            symptoms: true,
-            rejectionReason: true,
-            description: true,
-            time: true,
-            date: true,
-            status: {
-              select: {
-                name: true,
-              },
+          },
+          symptoms: true,
+          rejectionReason: true,
+          description: true,
+          time: true,
+          date: true,
+          status: {
+            select: {
+              name: true,
             },
           },
         },
       },
+    },
   });
   let json_response = {
     //results: status.length,
