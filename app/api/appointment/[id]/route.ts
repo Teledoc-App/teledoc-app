@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { io } from "@/app/socketServer";
 
 export async function GET(
   request: Request,
@@ -115,13 +116,21 @@ export async function PATCH(
         headers: { "Content-Type": "application/json" },
       });
     }
- await db.notification.create({
+    await db.notification.create({
       data: {
-        senderNotification: { connect: { id: updated_appointment.doctor.id} },
-        receiverNotification: { connect: { id: updated_appointment.patient.id } },
+        senderNotification: { connect: { id: updated_appointment.doctor.id } },
+        receiverNotification: {
+          connect: { id: updated_appointment.patient.id },
+        },
         appointment: { connect: { id: id } },
       },
     });
+
+    io.emit("custom-event", {
+      eventType: "update-appointment",
+      data: updated_appointment,
+    });
+
     let json_response = {
       status: "success",
       data: {
