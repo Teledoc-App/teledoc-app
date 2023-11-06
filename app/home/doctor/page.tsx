@@ -7,7 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import AppointmentCard from "@/components/ui/AppointmentCard";
-import NotificationCenter from "@/components/NotificationCenter";
+import NotificationCenterDoctor from "@/components/NotificationCenterDoctor";
 // import { Appointment } from "@prisma/client";
 
 interface Doctor {
@@ -144,7 +144,7 @@ export default function HomepagePatient() {
             </span>
           </div>
 
-          <NotificationCenter />
+          <NotificationCenterDoctor />
         </nav>
 
         {/* SEARCH */}

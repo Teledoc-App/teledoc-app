@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import NotificationCenterPatient from "@/components/NotificationCenterPatient";
 
 interface Doctor {
   username: string;
@@ -106,6 +107,7 @@ export default function HomepagePatient() {
               {userProfile?.name}
             </span>
           </div>
+          <NotificationCenterPatient />
         </nav>
 
         {/* SEARCH */}
