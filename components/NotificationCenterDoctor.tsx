@@ -100,6 +100,11 @@ export default function NotificationCenter() {
                   <span className="font-semibold text-[16px] ">
                     {notification.senderNotification.name}
                   </span>
+                  <p className="text-black text-[14px]">
+                    Request appointment <br /> at{" "}
+                    {formattedDate(notification.appointment.date)}{" "}
+                    {notification.appointment.time}
+                  </p>
                   <p className="text-[#858585] text-[12px]">
                     {formattedTime(notification.createdAt)} -{" "}
                     {formattedDate(notification.createdAt)}
@@ -110,7 +115,7 @@ export default function NotificationCenter() {
           </div>
           {/* FOOTER */}
           <div className="p-4 flex justify-center items-center w-full">
-            <button className="text-[#ff5757]">Clear Notifications</button>
+            {/* <button className="text-[#ff5757]">Clear Notifications</button> */}
           </div>
         </Dialog.Panel>
       </Dialog>
