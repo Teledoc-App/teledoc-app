@@ -10,6 +10,10 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("A user disconnected");
   });
+
+  socket.on("create-notification", (newNotification) => {
+    io.emit("new-notification", newNotification);
+  });
 });
 
 server.listen(3000, () => {

@@ -1,6 +1,9 @@
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,15 +45,35 @@ export default function NotificationCenter() {
     return formattedDate;
   };
 
-  const fetchNotifications = async () => {
-    const response = await axios.get("../../api/notification");
-    setNotifications(response.data.notification);
-  };
+  // const fetchNotifications = async () => {
+  //   const response = await axios.get("../../api/notification");
+  //   setNotifications(response.data.notification);
+  // };
 
   useEffect(() => {
+    // Function to fetch notifications
+    const fetchNotifications = async () => {
+      // Fetch notifications from your API as you did before
+      const response = await axios.get("../../api/notification");
+      setNotifications(response.data.notification);
+    };
+
+    // Add a Socket.IO event listener for new notifications
+    socket.on("new-notification", (newNotification) => {
+      // When a new notification is received, add it to the state
+      setNotifications((prevNotifications) => [
+        newNotification,
+        ...prevNotifications,
+      ]);
+    });
+
+    // Fetch notifications when the component mounts
     fetchNotifications();
-    console.log(notifications);
+    return () => {
+      socket.off("new-notification");
+    };
   }, []);
+
   return (
     <>
       {/* BELL BUTTON */}
