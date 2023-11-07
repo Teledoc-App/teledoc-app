@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:4000");
 
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);

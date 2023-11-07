@@ -16,8 +16,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Socket.IO server is running on port 3000");
+server.listen(4000, () => {
+  console.log("Socket.IO server is running on port 4000");
 });
 
 export { io };
