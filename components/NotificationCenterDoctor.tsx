@@ -1,6 +1,9 @@
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,8 +52,18 @@ export default function NotificationCenter() {
 
   useEffect(() => {
     fetchNotifications();
-    console.log(notifications);
+    socket.on("notification", (newNotification) => {
+      // Update the notifications when a new one is received
+      setNotifications((prevNotifications) => [
+        newNotification,
+        ...prevNotifications,
+      ]);
+    });
+    return () => {
+      socket.off("notification");
+    };
   }, []);
+
   return (
     <>
       {/* BELL BUTTON */}
