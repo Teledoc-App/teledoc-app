@@ -1,11 +1,33 @@
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import useSWR from "swr";
+import Image from "next/image";
+interface Notification {
+  id: number;
+  createdAt: Date;
+  senderNotification: {
+    name: string;
+    image: string;
+  };
+  appointment: {
+    date: Date;
+    time: string;
+    status: {
+      name: string;
+    }
+  }
+}
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  //const [notifications, setNotifications] = useState<any[]>([]);
+  
+  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
+  const { data: notifications } = useSWR("../../api/notification", fetcher, {
+    refreshInterval: 1000, 
+  });
+  
   const formattedTime = (timestamp: Date) => {
     const date = new Date(timestamp);
 
@@ -42,21 +64,21 @@ export default function NotificationCenter() {
     return formattedDate;
   };
 
-  const fetchNotifications = async () => {
-    const response = await axios.get("../../api/notification");
-    setNotifications(response.data.notification);
-  };
+  // const fetchNotifications = async () => {
+  //   const response = await axios.get("../../api/notification");
+  //   setNotifications(response.data.notification);
+  // };
 
-  useEffect(() => {
-    fetchNotifications();
-    console.log(notifications);
-  }, []);
+  // useEffect(() => {
+  //   fetchNotifications();
+  //   console.log(notifications);
+  // }, []);
   return (
     <>
       {/* BELL BUTTON */}
       <button
         onClick={() => setIsOpen(true)}
-        className="rounded-full ml-auto relative"
+        className="relative ml-auto rounded-full"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -88,13 +110,13 @@ export default function NotificationCenter() {
 
           {/* NOTIFICATIONS CONTAINER */}
           <div className="w-full flex flex-col overflow-y-scroll max-h-[265px]">
-            {notifications.map((notification) => (
+            {notifications.map((notification: Notification) => (
               <div
                 key={notification.id}
-                className="flex p-4 w-full border-b gap-4"
+                className="flex w-full gap-4 p-4 border-b"
               >
                 <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full overflow-hidden">
-                  <img src={notification.senderNotification.image} alt="" />
+                  <Image src={notification.senderNotification.image} alt="" />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-[16px] ">
@@ -114,7 +136,7 @@ export default function NotificationCenter() {
             ))}
           </div>
           {/* FOOTER */}
-          <div className="p-4 flex justify-center items-center w-full">
+          <div className="flex items-center justify-center w-full p-4">
             {/* <button className="text-[#ff5757]">Clear Notifications</button> */}
           </div>
         </Dialog.Panel>

@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import Image from "next/image";
+import { signOut } from "next-auth/react"
 
 interface Profile {
 	name: string;
@@ -22,9 +24,9 @@ const DoctorProfile: React.FC = () => {
 		getUserProfile();
 	}, []);
 	return (
-		<div className="bg-white w-screen h-fit flex justify-center items-center px-4 py-4 ">
+		<div className="flex items-center justify-center w-screen px-4 py-4 bg-white h-fit ">
 			<form className="w-full max-w-[400px] flex flex-col items-center gap-4 py-4 ">
-				<nav className="flex justify-center items-center w-full relative">
+				<nav className="relative flex items-center justify-center w-full">
 					<a href="/home/doctor" className="absolute left-0">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -42,8 +44,8 @@ const DoctorProfile: React.FC = () => {
 					<h1 className="text-[#ff5757] text-2xl font-bold">Profile</h1>
 				</nav>
 				<div className="w-[150px] h-[150px] m-5 rounded-full">
-					<img
-						className=" rounded-full"
+					<Image
+						className="rounded-full "
 						src={userProfile?.image || "https://i.pravatar.cc/200"}
 						alt="Profile picture"
 						width={200}
@@ -79,7 +81,7 @@ const DoctorProfile: React.FC = () => {
 				</Link>
 
 				<div className="flex  items-center w-[400px]">
-					<button>
+					<button onClick={() => signOut()}>
 						<div className="flex items-center">
 							<svg
 								width="45"

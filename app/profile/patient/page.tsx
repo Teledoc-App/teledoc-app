@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-
+import { signOut } from "next-auth/react"
+import Image from "next/image";
 interface Profile {
 	name: string;
 	image: string;
@@ -43,7 +44,7 @@ const PatientProfile: React.FC = () => {
 					<h1 className="text-[#ff5757] text-2xl font-bold">Profile</h1>
 				</nav>
 				<div className="w-[200px] h-[200px] rounded-full bg-red-200 overflow-hidden">
-					<img width={200} height={200} src={userProfile?.image} alt="" />
+					<Image width={200} height={200} src={userProfile?.image || "https://i.pravatar.cc/200"} alt="" />
 				</div>
 
 				<div>
@@ -98,7 +99,7 @@ const PatientProfile: React.FC = () => {
 				</Link>
 
 				<div className="flex  items-center w-[400px]">
-					<button>
+					<button onClick={() => signOut()}>
 						<div className="flex items-center">
 							<svg
 								width="45"
