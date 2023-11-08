@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     const notification = await db.notification.findMany({
       where: {
-        receiverId: userId,
+        receiverId: userId, // mesel
       },
       orderBy: {
         createdAt: "desc",

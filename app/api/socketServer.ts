@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
-import cors from "cors";
+import * as http from "http";
+
+const httpServer = http.createServer();
 
 interface DoctorUpdate {
   notification: {
@@ -43,64 +45,66 @@ interface PostAppointment {
   };
 }
 
-// Create a new instance of the CORS middleware
-const corsMiddleware = cors();
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000", // Replace with your frontend URL
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
+  },
+});
 
-export default function SocketHandler(req: any, res: any) {
-  if (res.socket.server.io) {
-    console.log("Already set up");
-    res.end();
-    return;
-  }
+// Event handler for client connections
+io.on("connection", (socket) => {
+  const clientId = socket.id;
+  console.log("A client connected");
+  console.log(`A client connected. ID: ${clientId}`);
+  io.emit("client-new", clientId);
 
-  const io = new Server(res.socket.server, {
-    path: "/api/socket/ping",
-    addTrailingSlash: false,
+  // Event handler for receiving messages from the client
+  socket.on("message", (data) => {
+    console.log("Received message:", data);
   });
 
-  // Event handler for client connections
-  io.on("connection", (socket) => {
-    const clientId = socket.id;
-    console.log("A client connected");
-    console.log(`A client connected. ID: ${clientId}`);
-    io.emit("client-new", clientId);
-
-    // Event handler for receiving messages from the client
-    socket.on("message", (data) => {
-      console.log("Received message:", data);
-    });
-
-    // Event handler for client disconnections
-    socket.on("disconnect", () => {
-      console.log("A client disconnected.");
-    });
-
-    socket.on("createAppointment", async (data: PostAppointment) => {
-      const userId = data.notification.receiverId;
-      const response = await fetch("/api/notification");
-      if (response) {
-        io.to(userId).emit("notification", {
-          ...data,
-          notificationId: response.json,
-        });
-      }
-    });
-
-    socket.on("doctorUpdate", async (data: DoctorUpdate) => {
-      const userId = data.notification.receiverId;
-      const response = await fetch("/api/notification");
-      if (response) {
-        io.to(userId).emit("notification", {
-          ...data,
-          notificationId: response.json,
-        });
-      }
-    });
+  socket.on("identifyUser", async () => {
+    const response = await fetch("http://localhost:3000/api/notification");
+    const data = await response.json();
+    socket.join(data.receiverId);
   });
 
-  // Apply the CORS middleware to the request and response
-  corsMiddleware(req, res, () => {
-    res.socket.server.io = io;
-    res.end();
+  // Event handler for client disconnections
+  socket.on("disconnect", () => {
+    console.log("A client disconnected.");
   });
-}
+
+  socket.on("createAppointment", async (data: PostAppointment) => {
+    const userId = data.notification.receiverId;
+    const response = await fetch("http://localhost:3000/api/notification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (response) {
+      io.to(userId).emit("notification", {
+        ...data,
+        notificationId: response.json,
+      });
+    }
+  });
+
+  socket.on("doctorUpdate", async (data: DoctorUpdate) => {
+    const userId = data.notification.receiverId;
+    const response = await fetch("/api/notification");
+    if (response) {
+      io.to(userId).emit("notification", {
+        ...data,
+        notificationId: response.json,
+      });
+    }
+  });
+});
+
+const PORT = 4001;
+httpServer.listen(PORT, () => {
+  console.log(`Socket.io server is running on port ${PORT}`);
+});

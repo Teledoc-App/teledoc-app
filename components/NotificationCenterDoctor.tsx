@@ -1,9 +1,12 @@
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
-const socket = io("http://localhost:4000");
+const socket = io("http://localhost:4001");
 
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +56,7 @@ export default function NotificationCenter() {
   useEffect(() => {
     fetchNotifications();
     socket.on("notification", (newNotification) => {
-      // Update the notifications when a new one is received
+      console.log(newNotification);
       setNotifications((prevNotifications) => [
         newNotification,
         ...prevNotifications,
@@ -62,6 +65,10 @@ export default function NotificationCenter() {
     return () => {
       socket.off("notification");
     };
+  }, [notifications]);
+
+  useEffect(() => {
+    socket.emit("identifyUser");
   }, []);
 
   return (
