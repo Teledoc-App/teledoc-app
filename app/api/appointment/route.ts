@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { io } from "@/app/socketServer";
 
 export async function GET(request: NextRequest) {
   const appointment = await db.appointment.findMany({
@@ -57,6 +58,12 @@ export async function POST(request: Request) {
         receiverNotification: { connect: { id: json.doctorId } },
         appointment: { connect: { id: appointment.id } },
       },
+    });
+
+    io.emit("custom-event", {
+      eventType: "new-appointment",
+      data: appointment,
+      message: notificationMessage,
     });
 
     let json_response = {
