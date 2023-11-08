@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Dialog } from "@headlessui/react";
 import HistoryCard from "@/components/ui/HistoryCard";
-import useSWR from "swr";
 
 interface Appointment {
 	id: string;
@@ -39,8 +38,7 @@ interface Profile {
 }
 
 export default function History() {
-	
-	//const [history, setHistory] = useState<Appointment[]>();
+	const [history, setHistory] = useState<Appointment[]>();
 
 	const [symptoms, setSymptoms] = useState("");
 	const [description, setDescription] = useState("");
@@ -52,16 +50,12 @@ export default function History() {
 	const [doctorId, setDoctorId] = useState("");
 	const [date, setDate] = React.useState<Date | null>(null);
 	const [statusId, setStatusId] = useState("23ba40d0-6c82-4d45-8b5c-21f8d70b959b");
-	
-	const { data: history } = useSWR("../../api/users/me", (url) => axios.get(url).then((res) => res.data.data.user.patientAppointments), {
-		revalidateOnFocus: true, 
-		refreshInterval: 1000, 
-	});
+
 	async function fetchHistory() {
 		try {
 			const response = await axios.get("../../api/users/me");
 			//   console.log(response.data.data.user.patientAppointments.status);
-			//setHistory(response.data.data.user.patientAppointments);
+			setHistory(response.data.data.user.patientAppointments);
 			setPatientId(response.data.data.user.id);
 			setDoctorId(response.data.data.user.patientAppointments[0].doctor.doctor.userId);
 
@@ -98,7 +92,7 @@ export default function History() {
 				</nav>
 				{/* {mapped} */}
 				<div>
-					{history?.map((appointment: Appointment, index: string) => (
+					{history?.map((appointment, index) => (
 						<HistoryCard key={index} appointment={appointment} />
 					))}
 				</div>

@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { parseISO } from "date-fns";
-import { io } from "@/app/socketServer";
 
 export async function GET(request: NextRequest) {
   // const page_str = request.nextUrl.searchParams.get("page");
@@ -62,18 +61,12 @@ export async function POST(request: Request) {
       data: json,
     });
 
-    io.emit("status-change", {
-      eventType: "status-change",
-      data: status,
-    });
-
     let json_response = {
       status: "success",
       data: {
         status,
       },
     };
-
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,
       headers: { "Content-Type": "application/json" },
