@@ -81,3 +81,44 @@ export async function GET(request: NextRequest) {
     return getErrorResponse(500, "Internal Server Error");
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const json = await request.json();
+
+    const appointment = await db.notification.create({
+      data: json,
+    });
+
+    let json_response = {
+      status: "success",
+      data: {
+        appointment,
+      },
+    };
+    return new NextResponse(JSON.stringify(json_response), {
+      status: 201,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error: any) {
+    if (error.code === "P2002") {
+      let error_response = {
+        status: "fail",
+        message: "appointment with title already exists",
+      };
+      return new NextResponse(JSON.stringify(error_response), {
+        status: 409,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    let error_response = {
+      status: "error",
+      message: error.message,
+    };
+    return new NextResponse(JSON.stringify(error_response), {
+      status: 507,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}

@@ -159,7 +159,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 						Rejected
 					</button>
 				) : (
-					<div className="flex gap-4 items-center">
+					<div className="flex items-center gap-4">
 						<button
 							onClick={() => accept(props.appointment.id)}
 							className="px-4 py-1 border rounded-full border-[#ff5757] bg-[#ff5757] text-white"
@@ -230,7 +230,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 									</button>
 								</div>
 
-								<div className="w-full flex justify-end">
+								<div className="flex justify-end w-full">
 									<button
 										className="rounded-lg bg-[#ff5757] text-white px-4 py-2 ml-auto w-full hover:cursor-pointer"
 										onClick={() => reject(props.appointment.id)}
@@ -252,7 +252,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 				)}
 
 				{/* {isAccepted !== rejected && isAccepted !== accepted ? (
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => accept(props.appointment.id)}
               className="px-4 py-1 border rounded-full border-[#ff5757] bg-[#ff5757] text-white"

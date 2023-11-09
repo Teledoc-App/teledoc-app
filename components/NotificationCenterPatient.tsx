@@ -1,10 +1,12 @@
+"use client"
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import Image from "next/image";
+
 interface Notification {
-  id: number;
+  id: string;
   createdAt: Date;
   senderNotification: {
     name: string;
@@ -20,14 +22,7 @@ interface Notification {
 }
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
-  //const [notifications, setNotifications] = useState<any[]>([]);
-  
-  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-  const { data: notifications } = useSWR("../../api/notification", fetcher, {
-    refreshInterval: 1000, 
-  });
-  
   const formattedTime = (timestamp: Date) => {
     const date = new Date(timestamp);
 
@@ -46,33 +41,35 @@ export default function NotificationCenter() {
   };
 
   const formattedDate = (timestamp: Date) => {
-    interface Options {
-      weekday: "long";
-      year: "numeric";
-      month: "long";
-      day: "numeric";
-    }
     const date = new Date(timestamp);
 
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     };
-    const formattedDate = date.toLocaleDateString("en-US", options as Options);
+
+    const formattedDate = date.toLocaleDateString("en-US", options);
     return formattedDate;
   };
+  
+  const fetchNotifications = async () => {
+    const response = await axios.get("../../api/notification");
+    return response.data.notification;
+  };
 
-  // const fetchNotifications = async () => {
-  //   const response = await axios.get("../../api/notification");
-  //   setNotifications(response.data.notification);
-  // };
+  const { data: notifications } = useSWR(
+    "../../api/notification",
+    fetchNotifications,
+    {
+      refreshInterval: 1000, // 1000 milliseconds = 1 second
+    }
+  );
 
-  // useEffect(() => {
-  //   fetchNotifications();
-  //   console.log(notifications);
-  // }, []);
+  useEffect(() => {
+    console.log(notifications);
+  }, [notifications]);
   return (
     <>
       {/* BELL BUTTON */}
@@ -84,7 +81,7 @@ export default function NotificationCenter() {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1.5"
+          strokeWidth="1.5"
           stroke="currentColor"
           className="w-6 h-6"
         >
@@ -110,7 +107,7 @@ export default function NotificationCenter() {
 
           {/* NOTIFICATIONS CONTAINER */}
           <div className="w-full flex flex-col overflow-y-scroll max-h-[265px]">
-            {notifications?.map((notification: Notification) => (
+            { notifications?.map((notification: Notification) => (
               <div
                 key={notification.id}
                 className="flex w-full gap-4 p-4 border-b"
@@ -133,7 +130,7 @@ export default function NotificationCenter() {
                   </p>
                 </div>
               </div>
-            ))}
+            )) }
           </div>
           {/* FOOTER */}
           <div className="flex items-center justify-center w-full p-4">
