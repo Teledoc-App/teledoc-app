@@ -110,7 +110,7 @@ export default function NotificationCenter() {
 
           {/* NOTIFICATIONS CONTAINER */}
           <div className="w-full flex flex-col overflow-y-scroll max-h-[265px]">
-            {notifications.map((notification: Notification) => (
+            {notifications?.map((notification: Notification) => (
               <div
                 key={notification.id}
                 className="flex w-full gap-4 p-4 border-b"
