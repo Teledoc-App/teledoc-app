@@ -81,7 +81,7 @@ const DoctorProfile: React.FC = () => {
 				</Link>
 
 				<div className="flex  items-center w-[400px]">
-					<button onClick={() => signOut()}>
+					<button onClick={() => signOut({callbackUrl: '/login'})}>
 						<div className="flex items-center">
 							<svg
 								width="45"

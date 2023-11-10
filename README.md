@@ -198,6 +198,11 @@ To run Media Maven on your local machine, follow these steps:
 - Github: [Gary Cruise](https://github.com/Garycruisee)
 - Linkedin: [Gary Cruise](https://www.linkedin.com/in/garycruise/)
 
+👤 **Indra Setiadhi P.**
+
+- Github: [Gary Cruise](https://github.com/indrasetiadhi4)
+- Linkedin: [Gary Cruise](https://www.linkedin.com/in/indrasetiadhi/)
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
