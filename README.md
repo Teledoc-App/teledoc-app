@@ -44,7 +44,7 @@ View Design UI/UX with : [Figma](https://www.figma.com/file/pmSQlFUXeCbQ2Y5o932K
 - Frontend Framework : Next Js App Router
 - Backend : Next Js
 - Database : PostgreSQL, Prisma ORM
-- Styling : Tailwind CSS,
+- Styling : Tailwind CSS, Material UI
 - App Deployment : Vercel
 - Database Deployment : Railway
 - Date Picker : react-date-picker
@@ -54,6 +54,9 @@ View Design UI/UX with : [Figma](https://www.figma.com/file/pmSQlFUXeCbQ2Y5o932K
 - Can log in using a Google account
 - has a search feature to find a doctor
 - Responsive design for seamless use on any device
+- Patients can request an extension
+- The doctor gets a notification if there is a new appointment
+- Patients can see notifications from doctors whether their appointment has been approved or rejected
 
 ## Installation
 
@@ -157,6 +160,16 @@ To run Media Maven on your local machine, follow these steps:
 | 'POST'   | '/api/status'      | Post a new Status    | 🔑 ⚿ |
 | 'PATCH'  | '/api/status/{id}' | Update a Status      | 🔑 ⚿ |
 | 'DELETE' | '/api/status/{id}' | Delete a Status      | 🔑 ⚿ |
+
+**Notification**
+
+| Method   | Endpoint                 | Description          | Auth |
+| :------- | :----------------------- | :------------------- | ---- |
+| 'GET'    | '/api/notification       | Get all Status       |      |
+| 'GET'    | '/api/notification/{id}' | Get all Status by id | 🔑⚿  |
+| 'POST'   | '/api/notification'      | Post a new Status    | 🔑 ⚿ |
+| 'PATCH'  | '/api/notification/{id}' | Update a Status      | 🔑 ⚿ |
+| 'DELETE' | '/api/notification/{id}' | Delete a Status      | 🔑 ⚿ |
 
 ## Validation
 
