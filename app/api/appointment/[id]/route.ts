@@ -115,13 +115,24 @@ export async function PATCH(
         headers: { "Content-Type": "application/json" },
       });
     }
- await db.notification.create({
-      data: {
-        senderNotification: { connect: { id: updated_appointment.doctor.id} },
-        receiverNotification: { connect: { id: updated_appointment.patient.id } },
-        appointment: { connect: { id: id } },
-      },
-    });
+
+    try {
+      const res = await db.notification.create({
+        data: {
+          senderNotification: {
+            connect: { id: updated_appointment.doctor.id },
+          },
+          receiverNotification: {
+            connect: { id: updated_appointment.patient.id },
+          },
+          appointment: { connect: { id: id } },
+        },
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+
     let json_response = {
       status: "success",
       data: {

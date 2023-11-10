@@ -56,6 +56,7 @@ export default function NotificationCenter() {
 
   const fetchNotifications = async () => {
     const response = await axios.get("../../api/notification");
+    console.log(response.data.notification);
     return response.data.notification;
   };
 
