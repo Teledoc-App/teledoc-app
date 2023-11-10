@@ -13,6 +13,8 @@ interface Appointment {
 	symptoms: string;
 	rejectionReason: string;
 	requestExtension: boolean;
+	time: string;
+	date: string;
 	status: {
 		name: string;
 	};
@@ -46,7 +48,7 @@ export default function HistoryCard(props: { appointment: Appointment }) {
 
 	const [symptoms, setSymptoms] = useState("");
 	const [description, setDescription] = useState("");
-	const [time, setTime] = useState("08:00");
+	const [time, setTime] = useState("");
 	const [username, setUsername] = useState("");
 	const [name, setName] = useState("");
 	const [gender, setGender] = useState("");
@@ -54,6 +56,11 @@ export default function HistoryCard(props: { appointment: Appointment }) {
 	const [doctorId, setDoctorId] = useState("");
 	const [date, setDate] = React.useState<Date | null>(null);
 	const [statusId, setStatusId] = useState("23ba40d0-6c82-4d45-8b5c-21f8d70b959b");
+
+	const isoDateString = props.appointment.date;
+	const isoDate = new Date(isoDateString);
+	const options = { year: "numeric", month: "long", day: "numeric" };
+	const readableDate = isoDate.toLocaleDateString("en-US", options as Intl.DateTimeFormatOptions);
 
 	async function fetchHistory() {
 		try {
@@ -136,7 +143,7 @@ export default function HistoryCard(props: { appointment: Appointment }) {
 	};
 	return (
 		<div>
-			<div className="container my-5 flex bg-[#d9d9d9]/30 h-[150px] w-[400px] px-0 rounded-lg border text-gray-400 outline-none">
+			<div className="container my-5 flex bg-[#d9d9d9]/30 h-[170px] w-[400px] px-0 rounded-lg border text-gray-400 outline-none">
 				<div className="p-2 flex items-center">
 					{props.appointment.doctor.image ? (
 						<img
@@ -165,25 +172,31 @@ export default function HistoryCard(props: { appointment: Appointment }) {
 						<h1 className="text-[#000000] text-xl font-bold">
 							{props.appointment.doctor.doctor?.username}
 						</h1>
+
 						<p className="text-black">{props.appointment.doctor.doctor?.specialist.title}</p>
+						<p className="text-[12px] text-[#858585]">
+							{readableDate}
+							{/* {props.appointment.date} */}
+						</p>
+						<p className="text-[12px] text-[#858585]">{props.appointment.time}</p>
 						<p
 							className={`${
 								props.appointment.status.name == "pending"
 									? "text-[#FFB74D]"
 									: props.appointment.status.name == "accepted"
 									? "text-[#4FC3F7] "
-									: props.appointment.status.name == "done"
+									: props.appointment.status.name == "completed"
 									? "text-[#81C784]"
-									: "text-[#858585]"
+									: "text-[#f94b4b]"
 							} font-bold text-m`}
 						>
 							{props.appointment.status.name}
 						</p>
 						{props.appointment.status.name == "rejected" && (
-							<p className="text-sm">({props.appointment.rejectionReason})</p>
+							<p className="text-sm text-[#f94b4b]">({props.appointment.rejectionReason})</p>
 						)}
 						<div className="py-2">
-							{props.appointment.status.name == "done" &&
+							{props.appointment.status.name == "completed" &&
 							props.appointment.requestExtension == false ? (
 								<div>
 									{/* <Link href={`/doctors/appointment/${appointment.doctor.doctor?.userId}`}> */}
@@ -287,7 +300,7 @@ export default function HistoryCard(props: { appointment: Appointment }) {
 								</div>
 							) : (
 								<div>
-									{props.appointment.status.name == "done" &&
+									{props.appointment.status.name == "completed" &&
 										props.appointment.requestExtension == true && (
 											<button
 												disabled
