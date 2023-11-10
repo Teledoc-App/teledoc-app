@@ -127,7 +127,6 @@ export default function HomepagePatient() {
   );
 
   return (
-    <Provider>
     <div className="flex justify-center w-screen">
       <div className="bg-white w-screen max-w-[425px] h-fit flex flex-col justify-center items-center px-4 py-8 overflow-y-scroll">
         {/* PROFILE */}
@@ -227,6 +226,5 @@ export default function HomepagePatient() {
         </section>
       </div>
     </div>
-    </Provider>
   );
 }
