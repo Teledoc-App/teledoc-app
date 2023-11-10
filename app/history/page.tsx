@@ -13,6 +13,8 @@ interface Appointment {
 	symptoms: string;
 	rejectionReason: string;
 	requestExtension: boolean;
+	date: string;
+	time: string;
 	status: {
 		name: string;
 	};
@@ -39,7 +41,6 @@ interface Profile {
 }
 
 export default function History() {
-	
 	//const [history, setHistory] = useState<Appointment[]>();
 
 	const [symptoms, setSymptoms] = useState("");
@@ -52,11 +53,15 @@ export default function History() {
 	const [doctorId, setDoctorId] = useState("");
 	const [date, setDate] = React.useState<Date | null>(null);
 	const [statusId, setStatusId] = useState("23ba40d0-6c82-4d45-8b5c-21f8d70b959b");
-	
-	const { data: history } = useSWR("../../api/users/me", (url) => axios.get(url).then((res) => res.data.data.user.patientAppointments), {
-		revalidateOnFocus: true, 
-		refreshInterval: 1000, 
-	});
+
+	const { data: history } = useSWR(
+		"../../api/users/me",
+		(url) => axios.get(url).then((res) => res.data.data.user.patientAppointments),
+		{
+			revalidateOnFocus: true,
+			refreshInterval: 1000,
+		}
+	);
 	async function fetchHistory() {
 		try {
 			const response = await axios.get("../../api/users/me");
