@@ -70,6 +70,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 	};
 
 	const done = async (id: string) => {
+		setIsAccepted(statusdone);
 		const response = await fetch("/api/appointment/" + id, {
 			method: "PATCH",
 			headers: {
