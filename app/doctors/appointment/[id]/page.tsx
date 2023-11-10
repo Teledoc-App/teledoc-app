@@ -9,7 +9,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 interface DoctorDetail {
 	username: string;
-	price: string;
+	price: number;
+	specialist: {
+		title: string;
+	};
+	user: {
+		image: string;
+	};
 }
 
 interface Profile {
@@ -131,30 +137,36 @@ export default function Appointment({ params }: { params: { id: string } }) {
 					<div className="flex p-2 ">
 						<Image
 							className="w-[120px] h-[120px] rounded-full"
-							src="https://picsum.photos/200"
+							src={doctorDetail?.user.image || "https://i.pravatar.cc/200"}
 							alt="Profile picture"
 							width={120}
 							height={120}
 						/>
 						<div className="px-7">
 							<h1 className="text-[#000000] text-xl font-bold">{doctorDetail?.username}</h1>
+							<p>{doctorDetail?.specialist.title}</p>
 							<div className="flex justify-around mt-10">
 								<p className="text-[#000000] font-bold text-m">Payment: </p>
-								<p className="text-[#ff5757]  text-m px-5">{doctorDetail?.price}</p>
+								<b className="text-[#ff5757]  text-m px-5">
+									{doctorDetail?.price.toLocaleString("id-ID", {
+										style: "currency",
+										currency: "IDR",
+									})}
+								</b>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div className="container flex w-[400px]">
-					<h1 className="text-[#000000] text-xl font-bold">Reason</h1>
+					<h1 className="text-[#000000] text-xl font-bold">Symptoms</h1>
 				</div>
 
 				<div className="container flex w-[400px]">
 					<input
 						className="bg-[#d9d9d9]/30 h-[40px] w-[400px]  px-4 rounded-lg border text-[#000000] outline-none "
 						type="text"
-						placeholder="Enter reason of appointment"
+						placeholder="Enter symptoms of appointment"
 						value={symptoms}
 						onChange={(e) => setSymptoms(e.target.value)}
 					/>
@@ -183,6 +195,7 @@ export default function Appointment({ params }: { params: { id: string } }) {
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
 						<DatePicker
 							format="YYYY - MM - DD"
+							disablePast
 							sx={{
 								width: "100%",
 								backgroundColor: "rgba(217, 217, 217, 0.3)",

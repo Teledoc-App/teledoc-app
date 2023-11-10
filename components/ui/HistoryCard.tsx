@@ -255,6 +255,7 @@ export default function HistoryCard(props: { appointment: Appointment }) {
 													<LocalizationProvider dateAdapter={AdapterDayjs}>
 														<DatePicker
 															format="YYYY - MM - DD"
+															disablePast
 															sx={{
 																width: "100%",
 																backgroundColor: "rgba(217, 217, 217, 0.3)",
