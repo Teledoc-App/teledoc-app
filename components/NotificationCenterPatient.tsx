@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -17,8 +17,8 @@ interface Notification {
     time: string;
     status: {
       name: string;
-    }
-  }
+    };
+  };
 }
 export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +53,7 @@ export default function NotificationCenter() {
     const formattedDate = date.toLocaleDateString("en-US", options);
     return formattedDate;
   };
-  
+
   const fetchNotifications = async () => {
     const response = await axios.get("../../api/notification");
     return response.data.notification;
@@ -70,6 +70,7 @@ export default function NotificationCenter() {
   useEffect(() => {
     console.log(notifications);
   }, [notifications]);
+
   return (
     <>
       {/* BELL BUTTON */}
@@ -107,20 +108,27 @@ export default function NotificationCenter() {
 
           {/* NOTIFICATIONS CONTAINER */}
           <div className="w-full flex flex-col overflow-y-scroll max-h-[265px]">
-            { notifications?.map((notification: Notification) => (
+            {notifications?.map((notification: Notification) => (
               <div
                 key={notification.id}
                 className="flex w-full gap-4 p-4 border-b"
               >
                 <div className="bg-[#d9d9d9] w-[40px] h-[40px] rounded-full overflow-hidden">
-                  <Image src={notification.senderNotification.image} alt="" />
+                  <Image
+                    src={notification.senderNotification.image}
+                    alt=""
+                    width={40}
+                    height={40}
+                  />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-[16px] ">
                     {notification.senderNotification.name}
                   </span>
                   <p className="text-black text-[14px]">
-                    has {notification.appointment.status.name} your appointment{" "}
+                    {notification.appointment.status.name === "accepted"
+                      ? "Your appointment has been approved"
+                      : `Your appointment is ${notification.appointment.status.name.toLowerCase()}`}
                     <br /> at {formattedDate(notification.appointment.date)}{" "}
                     {notification.appointment.time}
                   </p>
@@ -130,8 +138,9 @@ export default function NotificationCenter() {
                   </p>
                 </div>
               </div>
-            )) }
+            ))}
           </div>
+
           {/* FOOTER */}
           <div className="flex items-center justify-center w-full p-4">
             {/* <button className="text-[#ff5757]">Clear Notifications</button> */}
