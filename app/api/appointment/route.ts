@@ -109,7 +109,7 @@ export async function POST(request: Request) {
       data: json,
     });
 
-    const notification = await db.notification.create({
+    await db.notification.create({
       data: {
         senderNotification: { connect: { id: json.patientId } },
         receiverNotification: { connect: { id: json.doctorId } },
