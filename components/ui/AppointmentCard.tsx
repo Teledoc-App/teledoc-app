@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { parseISO } from "date-fns";
 import RejectReason from "../RejectReason";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 interface Appointment {
 	statusId: string;
@@ -50,6 +53,16 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 				statusId: accepted,
 			}),
 		});
+		toast.info("Appointment Accepted", {
+			position: "top-center",
+			autoClose: 1000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "colored",
+		});
 	};
 
 	const reject = async (id: string) => {
@@ -65,10 +78,20 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 			}),
 		});
 		setIsOpen(false);
-		alert("Successful");
+		toast.info("Appointment Rejected", {
+			position: "top-center",
+			autoClose: 1000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "colored",
+		});
 	};
 
 	const done = async (id: string) => {
+		setIsAccepted(statusdone);
 		const response = await fetch("/api/appointment/" + id, {
 			method: "PATCH",
 			headers: {
@@ -77,6 +100,16 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 			body: JSON.stringify({
 				statusId: statusdone,
 			}),
+		});
+		toast.success("Appointment completed", {
+			position: "top-center",
+			autoClose: 1000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "colored",
 		});
 	};
 
@@ -115,6 +148,8 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 				props.appointment.statusId == "e209365d-44ef-4c5d-8eea-42c827dbaeb1" ? "hidden" : null
 			}`}
 		>
+			{/* Same as */}
+			<ToastContainer />
 			{/* PICTURE */}
 			{props.appointment.patient?.image == null ? (
 				<svg
@@ -157,6 +192,13 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 						disabled
 					>
 						Rejected
+					</button>
+				) : isAccepted == statusdone ? (
+					<button
+						className="px-4 py-1 border rounded-full border-[#ff5757] text-[#ff5757]"
+						disabled
+					>
+						Completed
 					</button>
 				) : (
 					<div className="flex items-center gap-4">
