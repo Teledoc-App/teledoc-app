@@ -50,6 +50,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 				statusId: accepted,
 			}),
 		});
+		alert("Successful Accepted Appointment");
 	};
 
 	const reject = async (id: string) => {
@@ -65,7 +66,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 			}),
 		});
 		setIsOpen(false);
-		alert("Successful");
+		alert("Successful Rejected Appointment");
 	};
 
 	const done = async (id: string) => {
@@ -78,6 +79,7 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 				statusId: statusdone,
 			}),
 		});
+		alert("Appointment Completed");
 	};
 
 	//   const reject = async (id: string) => {
@@ -157,6 +159,13 @@ export default function AppointmentCard(props: { appointment: Appointment }) {
 						disabled
 					>
 						Rejected
+					</button>
+				) : isAccepted == statusdone ? (
+					<button
+						className="px-4 py-1 border rounded-full border-[#ff5757] text-[#ff5757]"
+						disabled
+					>
+						Completed
 					</button>
 				) : (
 					<div className="flex items-center gap-4">
